@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "module": "commonjs",
+    "declaration": true, //是否生成对应的声明文件
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "alwaysStrict": true,
+    "sourceMap": false,
+    "noEmit": false,
+    "noEmitHelpers": true,
+    "importHelpers": true,
+    "strictNullChecks": true,
+    "allowUnreachableCode": true,
+    "lib": ["es6"],
+    "typeRoots": ["./src/globals", "./node_modules/@types"],
+    "baseUrl": "./",
+    // "types": ["node"],
+    "outDir": "./lib", // 重定向输出目录
+    "paths": { "@/*": ["./*"] }
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "lib", "scripts", "__test__"],
+  "esModuleInterop": true,
+  "allowSyntheticDefaultImports": true,
+  "compileOnSave": false,
+  "buildOnSave": false
+}
