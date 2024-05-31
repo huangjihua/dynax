@@ -1,7 +1,7 @@
 // 通用对象类型
-interface GenericObject { [key: string]: any }
+export interface GenericObject { [key: string]: any }
 // 用户输入
-interface IQuestion {
+export interface IQuestion {
   name: string;
   description: string;
   author: string;
@@ -9,13 +9,17 @@ interface IQuestion {
   base?: string;
   editPattern?: string;
 }
-enum FrameworkType {
+export enum CompileFrameWork {
+  vite = 'vite',
+  webpack = 'webpack'
+}
+export enum FrameworkType {
   react = 'react',
   vue = 'vue',
   reactNative = 'react-native'
 }
 // 选择功能
-enum FeatureType {
+export enum FeatureType {
   TypeScript = 'typescript',
   Eslint = 'eslint',
   Stylelint = 'stylelint',
@@ -23,9 +27,8 @@ enum FeatureType {
   Mock = 'mock'
 }
 // 命令参数类型
-interface ICmdArgs {
+export interface ICmdArgs {
   template?: FrameworkType; // 模版
   context?: string;
 }
 
-export { GenericObject, FrameworkType, FeatureType, IQuestion, ICmdArgs }

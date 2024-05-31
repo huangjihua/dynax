@@ -5,7 +5,7 @@ import logger from "../helpers/logger";
 import spinner from "../helpers/spinner";
 import { getQuestions, getSelectFramework, getOptionalFeatures, checkProjectExist } from "../utils/prompt";
 import { FrameworkType, IQuestion, ICmdArgs } from "../types";
-import { addTsConfig, addEslint, addStylelint } from "../features";
+import { addTsConfig, addEslint, addStylelint, addPrettier, addMock } from "../features";
 import { createOrUpdateJsonConfigFile } from "../utils/file";
 
 const execa = require('execa');
@@ -115,7 +115,9 @@ const action = async (projectName: string, cmdArgs?: ICmdArgs) => {
       await cloneProject(targetDir, projectName, template, projectInfo);
       addTsConfig(targetDir, template, features) // typescript
       addEslint(targetDir, template, features) // eslint
-      addStylelint(targetDir, template,features) // stylelint
+      addStylelint(targetDir, features) // stylelint
+      addPrettier(targetDir, features) // prettier
+      addMock(targetDir, features) // mock
     }
   } catch (err: any) {
     spinner.fail(err);

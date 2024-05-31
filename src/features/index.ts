@@ -1,3 +1,5 @@
 export { default as addEslint } from './eslint'
 export { default as addTsConfig } from './typescript'
 export { default as addStylelint } from './stylelint'
+export { default as addPrettier } from './prettierrc'
+export { default as addMock } from './mock'
