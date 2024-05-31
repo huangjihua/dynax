@@ -1,9 +1,9 @@
 import { createOrOverwriteFile, createOrUpdateJsonConfigFile } from '../../utils/file'
-import { FrameworkType } from "../../types";
+import { FeatureType } from "../../types";
 import { stylelintignore, stylelint } from './base'
 
-export default function (targetDir: string, template: FrameworkType, features: string[]) {
-
+export default function (targetDir: string, features: string[]) {
+  if (!features.includes(FeatureType.Stylelint)) return;
   createOrOverwriteFile(`${targetDir}/.stylelintignore`, stylelintignore)
   createOrOverwriteFile(`${targetDir}/.stylelintrc.js`, `module.exports = ${JSON.stringify(stylelint, null, 2).replace(/"(?!.*\/)(?!.*-)([^"]+)":/g, '$1:')}`)
   createOrUpdateJsonConfigFile(`${targetDir}/package.json`, {
