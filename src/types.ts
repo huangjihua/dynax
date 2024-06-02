@@ -11,7 +11,8 @@ export interface IQuestion {
 }
 export enum CompileFrameWork {
   vite = 'vite',
-  webpack = 'webpack'
+  webpack = 'webpack',
+  metro = 'metro'
 }
 export enum FrameworkType {
   react = 'react',

@@ -4,9 +4,9 @@ import * as chalk from "chalk";
 import logger from "../helpers/logger";
 import spinner from "../helpers/spinner";
 import { getQuestions, getSelectFramework, getOptionalFeatures, checkProjectExist } from "../utils/prompt";
-import { FrameworkType, IQuestion, ICmdArgs } from "../types";
-import { addTsConfig, addEslint, addStylelint, addPrettier, addMock } from "../features";
+import { FrameworkType, IQuestion, ICmdArgs, CompileFrameWork } from "../types";
 import { createOrUpdateJsonConfigFile } from "../utils/file";
+import { addTsConfig, addEslint, addStylelint, addPrettier, addMock, initVite, initTpl, initApp } from "../features";
 
 const execa = require('execa');
 
@@ -45,7 +45,12 @@ export const cloneProject = (
   );
   console.log(projectInfo)
   // 重写文件内容
-  createOrUpdateJsonConfigFile(`${targetDir}/package.json`, projectInfo)
+  createOrUpdateJsonConfigFile(`${targetDir}/package.json`, {
+    ...projectInfo, ...{
+      "private": true,
+      "version": "0.0.0",
+    }
+  })
 
   // logger.info("开始安装项目所需依赖");
   // try {
@@ -118,6 +123,9 @@ const action = async (projectName: string, cmdArgs?: ICmdArgs) => {
       addStylelint(targetDir, features) // stylelint
       addPrettier(targetDir, features) // prettier
       addMock(targetDir, features) // mock
+      initVite(targetDir, template, features, CompileFrameWork.vite) // vite
+      initTpl(targetDir, template, features, CompileFrameWork.vite) // tpl
+      initApp(targetDir, template, features)
     }
   } catch (err: any) {
     spinner.fail(err);
