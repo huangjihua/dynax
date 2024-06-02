@@ -1,9 +1,7 @@
-
-import * as path from 'path'
 import {
   pathExistsSync, outputFileSync, readJsonSync, outputJsonSync, readdirSync, readFileSync, copyFileSync
 } from 'fs-extra';
-import logger from "../helpers/logger";
+// import logger from "../helpers/logger";
 import { convertToNestedObject, flattenObject, updateNestedValues } from '../utils/obj';
 import { GenericObject } from "../types";
 
