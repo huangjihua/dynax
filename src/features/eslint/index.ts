@@ -12,12 +12,11 @@ import { eslintBase, eslintignore } from './base'
 function addEslint(targetDir: string, template: FrameworkType, features: string[]) {
   if (!features.includes(FeatureType.Eslint)) return;
   let config: GenericObject = eslintBase
-  let installNpm: GenericObject[] = [{ eslint: '>=7', "eslint-plugin-node": "^11.1.0" }]
+  let installNpm: GenericObject[] = [{ eslint: '^8.57.0', "eslint-plugin-node": "^11.1.0" }]
   let ext: string[] = []
   if (features.includes(FeatureType.TypeScript)) {
     config.env = {
-      node: true,
-      browser: true,
+      ...config.env,
       es2021: true,
     }
     installNpm.push({ "@typescript-eslint/parser": "^7.11.0", "@typescript-eslint/eslint-plugin": "^7.11.0" })
@@ -29,7 +28,6 @@ function addEslint(targetDir: string, template: FrameworkType, features: string[
         extends: [
           'eslint:recommended',
           'plugin:react/recommended',
-          // 'plugin:jsx-a11y/recommended',
           'plugin:react-hooks/recommended',
         ],
         parserOptions: {
@@ -44,7 +42,11 @@ function addEslint(targetDir: string, template: FrameworkType, features: string[
           ],
         },
       }
-      installNpm.push({ "eslint-plugin-react-refresh": "^0.4.7", })
+      installNpm.push({
+        "eslint-plugin-react": "^7.34.2",
+        "eslint-plugin-react-hooks": "^4.6.2",
+        "eslint-plugin-react-refresh": "^0.4.7",
+      })
       ext.push('.jsx')
       if (features.includes(FeatureType.TypeScript)) {
         delete config.parserOptions;
@@ -117,7 +119,7 @@ function addEslint(targetDir: string, template: FrameworkType, features: string[
   // console.log('eslint 相关包：', Object.assign({}, ...installNpm))
   createOrUpdateJsonConfigFile(`${targetDir}/package.json`, {
     scripts: {
-      lint: `eslint --ext .js,${ext.join(',')} src`,
+      lint: `eslint --ext .js,${ext.join(',')} --fix src`,
     },
     devDependencies: { ...Object.assign({}, ...installNpm) },
   })

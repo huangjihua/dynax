@@ -1,4 +1,4 @@
-import { createOrOverwriteFile, createOrUpdateJsonConfigFile } from '../../utils/file'
+import { createOrOverwriteFile } from '../../utils/file'
 import { FeatureType, FrameworkType, CompileFrameWork } from "../../types";
 
 function createTemplate(template: FrameworkType, features: string[]) {

@@ -1,10 +1,8 @@
-import { readFileSync } from 'fs-extra'
-import * as path from 'path'
 import { createOrOverwriteFile, createOrUpdateJsonConfigFile } from '../../utils/file'
-import { GenericObject, FrameworkType, FeatureType, CompileFrameWork } from "../../types";
+import { FrameworkType, FeatureType, CompileFrameWork } from "../../types";
 import addEnv from '../env';
 
-function viteConfig(targetDir: string, template: FrameworkType, ext: string) {
+function viteConfig(targetDir: string, template: FrameworkType, ext: string, isMock: boolean) {
   let content = ``
   let npmName = 'react'
   let pkg = {
@@ -34,22 +32,28 @@ function viteConfig(targetDir: string, template: FrameworkType, ext: string) {
       pkg.devDependencies['@vitejs/plugin-react'] = "^4.3.0"
       break;
   }
-  const env = '`.env.${ mode }`'
-
   createOrUpdateJsonConfigFile(`${targetDir}/package.json`, pkg)
 
   const viteConfig = `import { defineConfig, loadEnv } from 'vite';
 ${content}
 import path from 'path';
+${isMock ? "import { viteMockServe } from 'vite-plugin-mock';" : ''}
 
 export default ({ mode }) => {
-  const env = loadEnv(${env}, './env');
+  const env = loadEnv(mode, './env');
   return defineConfig({
-    plugins: [${npmName}()],
+    plugins: [
+      ${npmName}()
+      ${isMock ? `,viteMockServe({
+        mockPath: 'mock',
+        enable: mode === 'dev',
+      })` : ''}
+    ],
     server: {
       port: 5000,
       open: env.VITE_APP_BASE,
     },
+    base:env.VITE_APP_BASE,
     resolve: {
       alias: {
         '@': path.resolve(__dirname, 'src/'),
@@ -81,7 +85,9 @@ export default ({ mode }) => {
 export default function initVite(targetDir: string, template: FrameworkType, features: string[], compileFrameWork: CompileFrameWork) {
   if (compileFrameWork !== CompileFrameWork.vite) return;
   const isTs = features.includes(FeatureType.TypeScript);
+  const isMock = features.includes(FeatureType.Mock);
   const ext = isTs ? 'ts' : 'js';
   addEnv(targetDir, compileFrameWork)
-  viteConfig(targetDir, template, ext)
+  viteConfig(targetDir, template, ext, isMock)
+  isTs && createOrOverwriteFile(`${targetDir}/.vite-env.d.ts`, '/// <reference types="vite/client" />')
 }

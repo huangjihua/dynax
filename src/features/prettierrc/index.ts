@@ -25,4 +25,10 @@ export default function addPrettier(targetDir: string, features: string[]) {
       },
     ],
   }, null, 2).replace(/"(?!.*\/)(?!.*-)([^"]+)":/g, '$1:')}`)
+  
+  createOrOverwriteFile(`${targetDir}/.prettierignore`, `dist/
+node_modules/
+pnpm-lock.yaml
+package-lock.json
+yarn.lock`)
 }
