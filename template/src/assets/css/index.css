@@ -1,0 +1,10 @@
+@import './_reset.css';
+#app {
+  width: 100%;
+  height: 100vh;
+}
+.dynax-layout-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

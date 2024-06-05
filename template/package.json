@@ -1,0 +1,21 @@
+{
+  "name": "dynax-generate-project",
+  "description": "",
+  "author": "",
+  "private": true,
+  "version": "0.0.0",
+  "engines": {
+    "node": ">=18.12.0",
+    "pnpm": ">=7.27.0"
+  },
+  "scripts": {},
+  "dependencies": {},
+  "devDependencies": {},
+  "lint-staged": {
+    "*.{js,ts,jsx,tsx,vue}": [
+      "eslint --cache --fix",
+      "prettier --write --cache"
+    ],
+    "*.{md,scss,css,json}": "prettier --write --cache"
+  }
+}
