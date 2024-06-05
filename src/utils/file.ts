@@ -1,9 +1,13 @@
+import * as path from 'path'
+import * as handlebars from 'handlebars'
 import {
   pathExistsSync, outputFileSync, readJsonSync, outputJsonSync, readdirSync, readFileSync, copyFileSync
 } from 'fs-extra';
 // import logger from "../helpers/logger";
 import { convertToNestedObject, flattenObject, updateNestedValues } from '../utils/obj';
 import { GenericObject } from "../types";
+
+
 
 /**
  * 创建文件，如果文件已存在则不处理，目录不存在会自动创建父级目录
@@ -67,4 +71,11 @@ export function createOrOverwriteFile(filePath: string, content: string) {
     console.error(`${filePath} update error: ${error}`);
     process.exit(0);
   }
+}
+
+export function getTemplateFileContent(filePath: string, templateCompiled: any, ext?: string) {
+
+  const content = readFileSync(path.join(__dirname, filePath), 'utf-8')
+  const fileContent = handlebars.compile(content)({ ext })
+  return fileContent
 }

@@ -6,7 +6,7 @@ import spinner from "../helpers/spinner";
 import { getQuestions, getSelectFramework, getOptionalFeatures, checkProjectExist } from "../utils/prompt";
 import { FrameworkType, IQuestion, ICmdArgs, CompileFrameWork } from "../types";
 import { createOrUpdateJsonConfigFile } from "../utils/file";
-import { addTsConfig, addEslint, addStylelint, addPrettier, addMock, initVite, initTpl, initApp } from "../features";
+import { addTsConfig, addEslint, addStylelint, addPrettier, addApi, addMock, initVite, initTpl, initApp, initOtherConfigFile, addSass, installHusky } from "../features";
 
 const execa = require('execa');
 
@@ -40,10 +40,10 @@ export const cloneProject = (
   spinner.start(`开始创建目标文件 ${chalk.cyan(targetDir)}`);
   // 复制'project-template'到目标路径下创建工程
   copySync(
-    path.join(__dirname, "..", "..", `templates/${template}`),
+    path.join(__dirname, "..", "..", `template`),
     targetDir
   );
-  console.log(projectInfo)
+  // console.log(projectInfo)
   // 重写文件内容
   createOrUpdateJsonConfigFile(`${targetDir}/package.json`, {
     ...projectInfo, ...{
@@ -81,7 +81,7 @@ export const cloneProject = (
   spinner.succeed(
     `目标文件创建完成 ${chalk.yellow(projectName)}\n👉 输入以下命令开始创作吧!:`
   );
-  logger.info(`$ cd ${projectName}\n$ pnpm dev\n`);
+  logger.info(`$ cd ${projectName}\n$ pnpm install\n$ pnpm dev\n`);
 };
 
 /**
@@ -119,13 +119,18 @@ const action = async (projectName: string, cmdArgs?: ICmdArgs) => {
       // console.log("配置如下:", projectInfo);
       await cloneProject(targetDir, projectName, template, projectInfo);
       addTsConfig(targetDir, template, features) // typescript
-      addEslint(targetDir, template, features) // eslint
-      addStylelint(targetDir, features) // stylelint
-      addPrettier(targetDir, features) // prettier
+
+      addApi(targetDir, features, CompileFrameWork.vite)
       addMock(targetDir, features) // mock
       initVite(targetDir, template, features, CompileFrameWork.vite) // vite
       initTpl(targetDir, template, features, CompileFrameWork.vite) // tpl
       initApp(targetDir, template, features)
+      initOtherConfigFile(targetDir)
+      addEslint(targetDir, template, features) // eslint
+      const isSass = addSass(targetDir)
+      addStylelint(targetDir, features, isSass) // stylelint
+      addPrettier(targetDir, features) // prettier
+      installHusky(targetDir)
     }
   } catch (err: any) {
     spinner.fail(err);
