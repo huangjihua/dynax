@@ -127,7 +127,7 @@ const action = async (projectName: string, cmdArgs?: ICmdArgs) => {
       initApp(targetDir, template, features)
       initOtherConfigFile(targetDir)
       addEslint(targetDir, template, features) // eslint
-      const isSass = addSass(targetDir)
+      const isSass = addSass(targetDir, features)
       addStylelint(targetDir, features, isSass) // stylelint
       addPrettier(targetDir, features) // prettier
       installHusky(targetDir)

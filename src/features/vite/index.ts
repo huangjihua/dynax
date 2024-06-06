@@ -4,6 +4,22 @@ import addEnv from '../env';
 
 function viteConfig(targetDir: string, template: FrameworkType, ext: string, isMock: boolean) {
   let content = ``
+  let extensions = ``
+  let resolve = `{
+      alias: {
+        '@': path.resolve(__dirname, 'src/'),
+      },
+    }`
+  let build = `build: {
+      sourcemap: mode !== 'prod',
+      minify: 'terser',
+      chunkSizeWarningLimit: 300,
+      terserOptions: {
+        compress: {
+          drop_console: mode !== 'prod',
+        },
+      }
+    },`
   let npmName = 'react'
   let pkg = {
     scripts: {
@@ -26,6 +42,27 @@ function viteConfig(targetDir: string, template: FrameworkType, ext: string, isM
       pkg.devDependencies['@vitejs/plugin-vue'] = "^5.0.5"
       break;
     case FrameworkType.reactNative:
+      build = ''
+      extensions = `const extensions = [
+  '.mjs',
+  '.web.tsx',
+  '.tsx',
+  '.web.ts',
+  '.ts',
+  '.web.jsx',
+  '.jsx',
+  '.web.js',
+  '.js',
+  '.css',
+  '.json',
+];`;
+      resolve = `{
+    extensions,
+    alias: {
+      '@': path.resolve(__dirname, 'src/'),
+      'react-native': 'react-native-web',
+    },
+  }`
       break;
     default:
       content = `import react from '@vitejs/plugin-react';`
@@ -39,6 +76,7 @@ ${content}
 import path from 'path';
 ${isMock ? "import { viteMockServe } from 'vite-plugin-mock';" : ''}
 
+${extensions}
 export default ({ mode }) => {
   const env = loadEnv(mode, './env');
   return defineConfig({
@@ -54,21 +92,8 @@ export default ({ mode }) => {
       open: env.VITE_APP_BASE,
     },
     base:env.VITE_APP_BASE,
-    resolve: {
-      alias: {
-        '@': path.resolve(__dirname, 'src/'),
-      },
-    },
-    build: {
-      sourcemap: mode !== 'prod',
-      minify: 'terser',
-      chunkSizeWarningLimit: 300,
-      terserOptions: {
-        compress: {
-          drop_console: mode !== 'prod',
-        },
-      }
-    },
+    resolve: ${resolve},
+    ${build}
   })
 }`
 

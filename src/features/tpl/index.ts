@@ -4,7 +4,7 @@ import { FeatureType, FrameworkType, CompileFrameWork } from "../../types";
 function createTemplate(template: FrameworkType, features: string[]) {
   const isTs = features.includes(FeatureType.TypeScript);
   const ext = isTs ? 'ts' : 'js';
-  let input = '/src/main.'
+  let input = './src/main.'
   switch (template) {
     case FrameworkType.vue:
       input += ext
