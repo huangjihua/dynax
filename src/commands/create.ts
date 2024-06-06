@@ -109,13 +109,12 @@ const action = async (projectName: string, cmdArgs?: ICmdArgs) => {
     }
     // 可选配置
     const { features } = await getOptionalFeatures();
-    // console.log(features)
-    // return;
 
     // 检查文件是否存在
     if (!(await checkProjectExist(targetDir))) {
       // 获取用户输入
       const projectInfo = await getQuestions(projectName)
+      const isNative = template === FrameworkType.reactNative
       // console.log("配置如下:", projectInfo);
       await cloneProject(targetDir, projectName, template, projectInfo);
       addTsConfig(targetDir, template, features) // typescript
@@ -123,14 +122,16 @@ const action = async (projectName: string, cmdArgs?: ICmdArgs) => {
       addApi(targetDir, features, CompileFrameWork.vite)
       addMock(targetDir, features) // mock
       initVite(targetDir, template, features, CompileFrameWork.vite) // vite
-      initTpl(targetDir, template, features, CompileFrameWork.vite) // tpl
-      initApp(targetDir, template, features)
-      initOtherConfigFile(targetDir)
+      initTpl(targetDir, template, features, CompileFrameWork.vite) // tpl => html
+      initApp(targetDir, template, features) // generate app
+      initOtherConfigFile(targetDir, template)
       addEslint(targetDir, template, features) // eslint
-      const isSass = addSass(targetDir, features)
-      addStylelint(targetDir, features, isSass) // stylelint
+
+      const isSass = isNative ? false : addSass(targetDir, features) // sass
+      addStylelint(targetDir, template, features, isSass) // stylelint
+
       addPrettier(targetDir, features) // prettier
-      installHusky(targetDir)
+      installHusky(targetDir) // husky
     }
   } catch (err: any) {
     spinner.fail(err);

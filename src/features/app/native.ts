@@ -24,8 +24,8 @@ export default function Index() {
     })
   },[])
   return (
-    <View style={{display:'flex',justifyContent:'center'}}>
-      <Text style={{ fontSize: 25 }}>{data}</Text>
+    <View>
+      <Text style={{ padding: 10, fontSize: 25, textAlign: 'center', color: 'white' }}>{data}</Text>
     </View>
   )
 }`
@@ -44,9 +44,8 @@ function generateIndex(targetDir: string, isMock: boolean, isTs: boolean, ext: s
   const indexPageContent = `import React,{ useState } from 'react'
 import { View, Button, Text, Image } from 'react-native';
 ${isMock ? `import HelloWorld from '@/components/hello-world'` : ''}
-import reactLogo from '@/assets/images/react.svg'
+import reactNativeLogo from '@/assets/images/react-native.svg'
 import viteLogo from '@/assets/images/vite.svg'
-import './style.css'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -65,7 +64,7 @@ function App() {
       </Text>
       ${isMock ? `<HelloWorld />` : ''}
       <View>
-        <Button title={'${_count}'} onPress={() => setCount(prevCount => prevCount + 1)} />
+        <Button title={${_count}} onPress={() => setCount(prevCount => prevCount + 1)} />
       </View>
       <Text style={{ fontSize: '14px', color: 'white', lineHeight: 30, textAlign: 'center' }}>
         Edit <code>src/views/index.jsx </code> and save to test HMR

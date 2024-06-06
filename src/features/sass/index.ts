@@ -1,4 +1,5 @@
 import { createOrUpdateJsonConfigFile } from '../../utils/file'
+import { FeatureType } from "../../types";
 
 /**
  * 添加Sass功能到目标目录

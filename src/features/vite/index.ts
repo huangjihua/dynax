@@ -3,7 +3,7 @@ import { FrameworkType, FeatureType, CompileFrameWork } from "../../types";
 import addEnv from '../env';
 
 function viteConfig(targetDir: string, template: FrameworkType, ext: string, isMock: boolean) {
-  let content = ``
+  let content = `import react from '@vitejs/plugin-react';`
   let extensions = ``
   let resolve = `{
       alias: {
@@ -42,7 +42,13 @@ function viteConfig(targetDir: string, template: FrameworkType, ext: string, isM
       pkg.devDependencies['@vitejs/plugin-vue'] = "^5.0.5"
       break;
     case FrameworkType.reactNative:
-      build = ''
+      build = `optimizeDeps: {
+    esbuildOptions: {
+      loader: { ".js": "jsx" },
+      resolveExtensions: extensions,
+      jsx: "automatic",
+    }
+  }`
       extensions = `const extensions = [
   '.mjs',
   '.web.tsx',
@@ -63,9 +69,9 @@ function viteConfig(targetDir: string, template: FrameworkType, ext: string, isM
       'react-native': 'react-native-web',
     },
   }`
+      pkg.devDependencies['@vitejs/plugin-react'] = "^4.3.0"
       break;
     default:
-      content = `import react from '@vitejs/plugin-react';`
       pkg.devDependencies['@vitejs/plugin-react'] = "^4.3.0"
       break;
   }
