@@ -40,9 +40,9 @@ export default function Index() {
 function generateIndex(targetDir: string, isMock: boolean, isTs: boolean, ext: string) {
 
   const indexPageContent = `import React,{ useState } from 'react'
+${isMock ? `import HelloWorld from '@/components/hello-world'` : ''}
 import reactLogo from '@/assets/images/react.svg'
 import viteLogo from '@/assets/images/vite.svg'
-${isMock ? `import HelloWorld from '@/components/hello-world'` : ''}
 import './style.css'
 
 function App() {

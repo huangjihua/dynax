@@ -5,29 +5,108 @@ import { FeatureType } from "../../types";
  * 生成组件
  *
  * @param {string} targetDir 目标目录路径
- * @param {string} ext 扩展名
+ * @param {string} lang isTS? lang="ts":'';
  */
-function generateComponent(targetDir: string, ext: string) {
-  const helloDynax = `<script setup>
-import { ref } from 'vue'
+function generateComponent(targetDir: string, lang: string) {
+  const HelloWorld = `<script setup${lang}>
+import { ref,onMounted } from 'vue'
+import {getHelloworld} from '@/api'
+ 
+  const data = ref(null);
+  onMounted(async () => {
+    try {
+      const {returncode,result} = await getHelloworld();
+      if(returncode===0) {data.value = result}
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  });
 
-defineProps({
-  data: String,
-})
 </script>
 
 <template>
-  <div class="hello-dynax">
-    <h1 style="color: red">{{data}}</h1>
+  <div className="dynax-layout-center">
+      <h2>{{data}}</h2>
   </div>
-  <p class="read-the-docs">Click on the Vite and Vue logos to learn more</p>
 </template>
 
 <style scoped>
+</style>
 `
-  createOrOverwriteFile(`${targetDir}/src/components/hello-dynax.vue`, helloDynax)
+  createOrOverwriteFile(`${targetDir}/src/components/hello-world/index.vue`, HelloWorld)
 }
 
+/**
+ * 生成 index 文件
+ *
+ * @param targetDir 目标目录
+ * @param isMock 是否为 mock
+ * @param lang  语言类型 isTS? lang="ts":'';
+ */
+function generateIndex(targetDir: string, isMock: boolean, isTs: boolean, lang: string) {
+  const indexPageContent = `<script setup${lang}>
+  import { ref } from 'vue'
+  ${isMock ? `import HelloWorld from '@/components/hello-world/index.vue'` : ''}
+
+  const count = ref(0)
+</script>
+
+<template>
+  <div class="dynax-layout-center">
+    <a href="https://vitejs.dev" target="_blank">
+      <img src="../../assets/images/vite.svg" class="logo" alt="Vite logo" />
+    </a>
+    <a href="https://vuejs.org/" target="_blank">
+      <img src="../../assets/images/vue.svg" class="logo vue" alt="Vue logo" />
+    </a>
+  </div>
+   <h1>Vite + Vue  + ${lang ? "TypeScript" : 'JavaScript'}</h1>
+  ${isMock ? `<HelloWorld />` : ''}
+  <div class="dynax-layout-center card">
+    <button type="button" @click="count++">count is {{ count }}</button>
+  </div>
+   <p className="dynax-layout-center">
+      Edit
+      <code>src/views/index.vue</code> to test HMR
+    </p>
+  <p class="dynax-layout-center">Click on the Vite and Vue logos to learn more</p>
+</template>
+
+<style scoped>
+  @import 'style.css'
+</style>`
+  createOrOverwriteFile(`${targetDir}/src/views/index/index.vue`, indexPageContent)
+}
+
+function generateApp(targetDir: string, lang: string) {
+  const appContent = `<script setup${lang}>
+import Index from '@/views/index/index.vue'
+</script>
+
+<template>
+  <Index/>
+</template>
+
+<style scoped>
+</style>
+`
+  createOrOverwriteFile(`${targetDir}/src/App.vue`, appContent)
+}
+
+/**
+ * 生成主文件
+ *
+ * @param targetDir 目标目录
+ * @param ext 文件扩展名
+ */
+function generateMain(targetDir: string, ext: string) {
+  const mainPageContent = `import { createApp } from 'vue'
+  import App from './App.vue'
+  import '@/assets/css/index.css'
+
+  createApp(App).mount('#app')`
+  createOrOverwriteFile(`${targetDir}/src/main.${ext} `, mainPageContent)
+}
 /**
  * 生成 React 应用
  *
@@ -39,56 +118,12 @@ export default function generateVueApp(targetDir: string, features: string[], re
   const isTs = features.includes(FeatureType.TypeScript);
   const isMock = features.includes(FeatureType.Mock);
   const ext = isTs ? 'ts' : 'js';
-  const mainPageContent = `import { createApp } from 'vue'
-import './style.css'
-import App from './App.vue'
+  const lang = isTs ? ' lang="ts"' : '';
 
-createApp(App).mount('#app')`
-
-  const appPageContent = `<script setup${isTs ? 'lang="ts"' : ''}>
-  import { ref } from 'vue'
-  ${isMock ? `import HelloDynax from '@/components/hello-dynax.vue'` : ''}
-  const count = ref(0)
-</script>
-
-<template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-   <h1>Vite + Vue</h1>
-  <div class="card">
-    <button type="button" @click="count++">count is {{ count }}</button>
-    <p>
-      Edit
-      <code>components/HelloWorld.vue</code> to test HMR
-    </p>
-  </div>
-  ${isMock ? `<HelloDynax />` : ''}
-  <p class="read-the-docs">Click on the Vite and Vue logos to learn more</p>
-</template>
-
-<style scoped>
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-    transition: filter 300ms;
-  }
-  .logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
-  }
-  .logo.vue:hover {
-    filter: drop-shadow(0 0 2em #42b883aa);
-  }
-</style>`
-  createOrOverwriteFile(`${targetDir}/src/App.vue`, appPageContent)
-  createOrOverwriteFile(`${targetDir}/src/main.${ext}`, mainPageContent)
-  isMock && generateComponent(targetDir, ext)
+  generateIndex(targetDir, isMock, isTs, lang)
+  generateApp(targetDir, lang)
+  generateMain(targetDir, ext)
+  isMock && generateComponent(targetDir, lang)
   createOrUpdateJsonConfigFile(`${targetDir}/package.json`, {
     dependencies: {
       "vue": "^3.4.27"
