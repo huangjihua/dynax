@@ -1,13 +1,12 @@
 {
   "name": "dynax",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "This ClI tool anables you to quickly start building a new React or React-Native or Vue application,with everything you need to start developing in minutes.",
   "main": "index.js",
   "homepage": "",
   "files": [
     "lib",
-    "templates",
-    "configs",
+    "template",
     "package.json",
     "README.md"
   ],
