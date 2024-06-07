@@ -123,7 +123,7 @@ const action = async (projectName: string, cmdArgs?: ICmdArgs) => {
       addMock(targetDir, features) // mock
       initVite(targetDir, template, features, CompileFrameWork.vite) // vite
       initTpl(targetDir, template, features, CompileFrameWork.vite) // tpl => html
-      initApp(targetDir, template, features) // generate app
+      initApp(targetDir, template, projectName, features) // generate app
       initOtherConfigFile(targetDir, template)
       addEslint(targetDir, template, features) // eslint
 

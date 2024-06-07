@@ -174,7 +174,7 @@ export default function generateReactApp(targetDir: string, features: string[], 
       "react-dom": "^18.3.1",
       "react-error-boundary": "^4.0.13",
       "react-router-dom": "^6.23.1",
-      "react-native": "0.74",
+      "react-native": "0.74.2",
       "react-native-web": "0.19.12"
     },
     "devDependencies": {
