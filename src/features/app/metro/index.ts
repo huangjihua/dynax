@@ -1,6 +1,5 @@
 import { createOrOverwriteFile, createOrUpdateJsonConfigFile } from '../../../utils/file'
-// import { FeatureType, CompileFrameWork } from "../../types";
-
+import { FrameworkType } from "../../../types";
 
 /**
  * 生成 Metro 配置文件
@@ -9,19 +8,23 @@ import { createOrOverwriteFile, createOrUpdateJsonConfigFile } from '../../../ut
  */
 function generateMetroConfigFile(targetDir: string) {
 
-  createOrOverwriteFile(`${targetDir}/babel.config.js`, `module.exports = {
-    presets: ['module:metro-react-native-babel-preset'],
-  plugins: [
-      'module-resolver',
-      {
-        root: ['./src'],
-        alias: {
-          '@': './src',
-        },
-      },
-    ],
-  ],
-};`)
+  createOrOverwriteFile(`${targetDir}/metro.config.js`, `const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config');
+
+/**
+ * Metro配置
+ * https://metrobundler.dev/docs/configuration
+ *
+ * @type {import('metro-config').MetroConfig}
+ */
+const config = {
+  resolver: {
+    extraNodeModules: {
+      '@': ${'`${__dirname}/src`'},
+    },
+  },
+};
+
+module.exports = mergeConfig(getDefaultConfig(__dirname), config);`)
 }
 
 /**
@@ -31,7 +34,7 @@ function generateMetroConfigFile(targetDir: string) {
  */
 function generateLabelConfig(targetDir: string) {
   createOrOverwriteFile(`${targetDir}/babel.config.js`, `module.exports = {
-    presets: ['module:metro-react-native-babel-preset'],
+  presets: ['module:metro-react-native-babel-preset'],
   plugins: [
       'module-resolver',
       {
@@ -72,7 +75,6 @@ function generateAppConfig(targetDir: string, projectName: string) {
   )
 }
 
-
 /**
  * 初始化 Metro 配置
  *
@@ -102,6 +104,7 @@ export default function initMetro(targetDir: string, template: FrameworkType, pr
     "devDependencies": {
       "@babel/core": "^7.14.6",
       "@babel/runtime": "^7.14.6",
+      "babel-plugin-module-resolver": "^5.0.2",
       "metro-react-native-babel-preset": "0.77.0",
       "react-native-css-transformer": "2.0.0",
     }
