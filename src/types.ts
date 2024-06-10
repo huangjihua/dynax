@@ -32,4 +32,3 @@ export interface ICmdArgs {
   template?: FrameworkType; // 模版
   context?: string;
 }
-

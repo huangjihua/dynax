@@ -140,8 +140,8 @@ const action = async (projectName: string, cmdArgs?: ICmdArgs) => {
 };
 
 export default {
-  command: "create <registry-name>",
-  description: "创建一个npm私服仓库",
+  command: "create <project-name>",
+  description: "创建一个新的项目",
   optionList: [
     ["--context <context>", "上下文路径(新建文件路径)"],
     ["--template <template>", "选择哪个模版"],
