@@ -1,4 +1,3 @@
-import * as path from "path";
 import logger from "../helpers/logger";
 
 const execa = require('execa');
