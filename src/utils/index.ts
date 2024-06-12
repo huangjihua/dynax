@@ -47,3 +47,15 @@ export const getLatestVersion = async (pkgName: string) => {
   const _manifest = await manifest(`${pkgName}@latest`)
   return _manifest.version
 }
+
+/**
+ * 设置git信息
+ *
+ * @param git git仓库地址
+ * @returns 返回包含git初始化、分支设置、远程仓库设置的字符串数组
+ */
+export const setGit = (git: string): string[] => [
+  "git init",
+  "git branch -M master",
+  `git remote add origin ${git}`,
+];

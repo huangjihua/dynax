@@ -1,89 +1,38 @@
 import * as path from "path";
 import { copySync } from 'fs-extra'
 import * as chalk from "chalk";
-import logger from "../helpers/logger";
-import spinner from "../helpers/spinner";
 import { getQuestions, getSelectFramework, getOptionalFeatures, checkProjectExist } from "../utils/prompt";
-import { FrameworkType, IQuestion, ICmdArgs, CompileFrameWork } from "../types";
+import { FrameworkType, ICmdArgs, CompileFrameWork } from "../types";
 import { createOrUpdateJsonConfigFile } from "../utils/file";
 import { addTsConfig, addEslint, addStylelint, addPrettier, addApi, addMock, initVite, initTpl, initApp, initOtherConfigFile, addSass, installHusky } from "../features";
-
-const execa = require('execa');
-
-/**
- * 生成 Git 初始化命令数组
- *
- * @param git 远程仓库地址
- * @returns Git 初始化命令数组
- */
-const gitCmds = (git: string): string[] => [
-  "git init",
-  "git branch -M master",
-  `git remote add origin ${git}`,
-];
+import spinner from '../helpers/spinner'
 
 /**
- * 克隆项目
+ * 生成特性文件
  *
- * @param targetDir 目标目录
  * @param projectName 项目名称
- * @param template 项目模板
- * @param projectInfo 项目信息
+ * @param targetDir 目标目录
+ * @param template 框架类型
+ * @param features 特性数组
  * @returns 无返回值
  */
-export const cloneProject = (
-  targetDir: string,
-  projectName: string,
-  template: FrameworkType,
-  projectInfo: IQuestion
-) => {
-  spinner.start(`开始创建目标文件 ${chalk.cyan(targetDir)}`);
-  // 复制'project-template'到目标路径下创建工程
-  copySync(
-    path.join(__dirname, "..", "..", `template`),
-    targetDir
-  );
-  // console.log(projectInfo)
-  // 重写文件内容
-  createOrUpdateJsonConfigFile(`${targetDir}/package.json`, {
-    ...projectInfo, ...{
-      "private": true,
-      "version": "0.0.0",
-    }
-  })
+const generateFeatureFile = (projectName: string, targetDir: string, template: FrameworkType, features: string[]) => {
+  const isNative = template === FrameworkType.reactNative
+  addTsConfig(targetDir, template, features) // typescript
+  addApi(targetDir, features, CompileFrameWork.vite)
+  addMock(targetDir, features) // mock
+  initVite(targetDir, template, features, CompileFrameWork.vite) // vite
+  initTpl(targetDir, template, features, CompileFrameWork.vite) // tpl => html
+  initApp(targetDir, template, projectName, features) // generate app
+  initOtherConfigFile(targetDir, template)
+  addEslint(targetDir, template, features) // eslint
 
-  // logger.info("开始安装项目所需依赖");
-  // try {
-  //   // 新建工程装包
-  //   execa.commandSync("pnpm install", {
-  //     stdio: "inherit",
-  //     cwd: targetDir,
-  //   });
-  // } catch (error) {
-  //   // 报错就用npm试下
-  //   execa.commandSync("npm install", {
-  //     stdio: "inherit",
-  //     cwd: targetDir,
-  //   });
-  // }
+  const isSass = isNative ? false : addSass(targetDir, features) // sass
+  addStylelint(targetDir, template, features, isSass) // stylelint
 
-  if (projectInfo.git) {
-    logger.info("开始关联项目到git");
-    // 关联git
-    gitCmds(projectInfo.git).forEach((cmd) =>
-      execa.commandSync(cmd, {
-        stdio: "inherit",
-        cwd: targetDir,
-      })
-    );
-  }
-
-  spinner.succeed(
-    `目标文件创建完成 ${chalk.yellow(projectName)}\n👉 输入以下命令开始创作吧!:`
-  );
-  logger.info(`$ cd ${projectName}\n$ pnpm install\n$ pnpm dev\n`);
-};
-
+  addPrettier(targetDir, features) // prettier
+  installHusky(targetDir) // husky
+}
 /**
  * 创建一个新的项目
  *
@@ -114,27 +63,24 @@ const action = async (projectName: string, cmdArgs?: ICmdArgs) => {
     if (!(await checkProjectExist(targetDir))) {
       // 获取用户输入
       const projectInfo = await getQuestions(projectName)
-      const isNative = template === FrameworkType.reactNative
-      // console.log("配置如下:", projectInfo);
-      await cloneProject(targetDir, projectName, template, projectInfo);
-      addTsConfig(targetDir, template, features) // typescript
-
-      addApi(targetDir, features, CompileFrameWork.vite)
-      addMock(targetDir, features) // mock
-      initVite(targetDir, template, features, CompileFrameWork.vite) // vite
-      initTpl(targetDir, template, features, CompileFrameWork.vite) // tpl => html
-      initApp(targetDir, template, projectName, features) // generate app
-      initOtherConfigFile(targetDir, template)
-      addEslint(targetDir, template, features) // eslint
-
-      const isSass = isNative ? false : addSass(targetDir, features) // sass
-      addStylelint(targetDir, template, features, isSass) // stylelint
-
-      addPrettier(targetDir, features) // prettier
-      installHusky(targetDir) // husky
+      spinner.start(`start create project: ${chalk.cyan(projectName)}`);
+      // 复制'template'到目标路径下创建工程
+      copySync(path.join(__dirname, "..", "..", `template`), targetDir);
+      // 重写文件内容
+      createOrUpdateJsonConfigFile(`${targetDir}/package.json`, {
+        ...projectInfo, ...{
+          "private": true,
+          "version": "0.0.0",
+        }
+      })
+      generateFeatureFile(projectName, targetDir, template, features)
+      spinner.end(
+        `目标文件创建完成 ${chalk.yellow(projectName)}\n👉 输入以下命令开始创作吧!:`
+      );
+      console.log(chalk.blue(`$ cd ${projectName}\n$ pnpm install\n$ pnpm dev\n`))
     }
   } catch (err: any) {
-    spinner.fail(err);
+    console.error(`Action failed : ${err.message}`)
     return;
   }
 };

@@ -17,6 +17,7 @@ specifiers:
   inquirer: ^8.2.0
   ora: ^5.4.1
   pacote: ^18.0.6
+  progress: ^2.0.3
   prompts: ^2.4.2
   rimraf: ^5.0.5
   ts-node: ^10.9.2
@@ -33,6 +34,7 @@ dependencies:
   inquirer: 8.2.6
   ora: 5.4.1
   pacote: 18.0.6
+  progress: 2.0.3
   prompts: 2.4.2
 
 devDependencies:
@@ -2605,6 +2607,11 @@ packages:
   /proc-log/4.2.0:
     resolution: {integrity: sha512-g8+OnU/L2v+wyiVK+D5fA34J7EH8jZ8DDlvwhRCMxmMj7UCBvxiO1mGeN+36JXIKF4zevU4kRBd8lVgG9vLelA==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
+    dev: false
+
+  /progress/2.0.3:
+    resolution: {integrity: sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==}
+    engines: {node: '>=0.4.0'}
     dev: false
 
   /promise-inflight/1.0.1:

@@ -5,7 +5,7 @@ export class Spinner {
   spinner: ora.Ora;
 
   constructor() {
-    this.spinner = ora();
+    this.spinner = ora({ spinner: 'dots', });
   }
   // 开始加载
   start = (text?: string) => {
@@ -16,15 +16,19 @@ export class Spinner {
       text: msg,
     });
   };
-
-  // 加载成功
   succeed = (text?: string) => {
+    this.spinner.succeed(text)
+  };
+  // 加载成功
+  end = (text?: string) => {
     this.spinner.stopAndPersist({
       symbol: "🎉",
       text: `${text}\n`,
     });
   };
-
+  loading = (text?: string) => {
+    this.spinner.start(text)
+  }
   // 加载失败
   fail = (text?: string) => {
     this.spinner.fail(chalk.red(text));

@@ -1,13 +1,11 @@
 import * as path from 'path'
 import * as handlebars from 'handlebars'
 import {
-  pathExistsSync, outputFileSync, readJsonSync, outputJsonSync, readdirSync, readFileSync, copyFileSync
+  pathExistsSync, outputFileSync, readJsonSync, outputJsonSync, readFileSync
 } from 'fs-extra';
-// import logger from "../helpers/logger";
-import { convertToNestedObject, flattenObject, updateNestedValues } from '../utils/obj';
+import spinner from '../helpers/spinner'
+import { flattenObject, updateNestedValues } from '../utils/obj';
 import { GenericObject } from "../types";
-
-
 
 /**
  * 创建文件，如果文件已存在则不处理，目录不存在会自动创建父级目录
@@ -22,7 +20,7 @@ export function createFile(filePath: string, context: any) {
       context = JSON.stringify(context, null, 2)
     }
     outputFileSync(filePath, context, { encoding: 'utf8' });
-    console.log(`Successfully created ${filePath} file.`);
+    spinner.succeed(`Successfully created ${filePath} file.`)
     return true;
   }
   return false
@@ -43,13 +41,11 @@ export function createOrUpdateJsonConfigFile(filePath: string, updates: GenericO
     const isCreated = createFile(filePath, updates)
     if (isCreated) return;
     let fileJson = readJsonSync(filePath, { encoding: 'utf8' });
-    // console.log('fileData:', fileJson)
     const newFileData = updateNestedValues(fileJson, flattenObject(updates))
-    // console.log('newFileData:', newFileData)
     outputJsonSync(filePath, newFileData, { spaces: 2, encoding: 'utf8' });
-    console.log(`Successfully update ${filePath} file`);
+    spinner.succeed(`Successfully update ${filePath} file`);
   } catch (error) {
-    console.error(`${filePath} update error: ${error}`);
+    spinner.fail(`${filePath} update error: ${error}`);
     process.exit(0);
   }
 }
@@ -66,9 +62,9 @@ export function createOrOverwriteFile(filePath: string, content: string) {
     const isCreated = createFile(filePath, content)
     if (isCreated) return;
     outputFileSync(filePath, content, { encoding: 'utf8' });
-    console.log(`Successfully update ${filePath} file`);
+    spinner.succeed(`Successfully update ${filePath} file`);
   } catch (error) {
-    console.error(`${filePath} update error: ${error}`);
+    spinner.fail(`${filePath} update error: ${error}`);
     process.exit(0);
   }
 }
