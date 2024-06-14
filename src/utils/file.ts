@@ -1,5 +1,4 @@
 import * as path from 'path'
-import * as handlebars from 'handlebars'
 import {
   pathExistsSync, outputFileSync, readJsonSync, outputJsonSync, readFileSync
 } from 'fs-extra';
@@ -15,12 +14,13 @@ import { GenericObject } from "../types";
  * @param {*} context
  */
 export function createFile(filePath: string, context: any) {
+
   if (!pathExistsSync(filePath)) {
     if (typeof context !== 'string') {
       context = JSON.stringify(context, null, 2)
     }
     outputFileSync(filePath, context, { encoding: 'utf8' });
-    spinner.succeed(`Successfully created ${filePath} file.`)
+    // spinner.succeed(`Successfully created ${filePath}`)
     return true;
   }
   return false
@@ -43,9 +43,9 @@ export function createOrUpdateJsonConfigFile(filePath: string, updates: GenericO
     let fileJson = readJsonSync(filePath, { encoding: 'utf8' });
     const newFileData = updateNestedValues(fileJson, flattenObject(updates))
     outputJsonSync(filePath, newFileData, { spaces: 2, encoding: 'utf8' });
-    spinner.succeed(`Successfully update ${filePath} file`);
+    // spinner.succeed(`Successfully updated ${filePath}`);
   } catch (error) {
-    spinner.fail(`${filePath} update error: ${error}`);
+    spinner.fail(`${filePath} update Failed: ${error}`);
     process.exit(0);
   }
 }
@@ -62,16 +62,9 @@ export function createOrOverwriteFile(filePath: string, content: string) {
     const isCreated = createFile(filePath, content)
     if (isCreated) return;
     outputFileSync(filePath, content, { encoding: 'utf8' });
-    spinner.succeed(`Successfully update ${filePath} file`);
+    // spinner.succeed(`Successfully updated ${filePath}`);
   } catch (error) {
-    spinner.fail(`${filePath} update error: ${error}`);
+    spinner.fail(`${filePath} update Failed: ${error}`);
     process.exit(0);
   }
-}
-
-export function getTemplateFileContent(filePath: string, templateCompiled: any, ext?: string) {
-
-  const content = readFileSync(path.join(__dirname, filePath), 'utf-8')
-  const fileContent = handlebars.compile(content)({ ext })
-  return fileContent
 }

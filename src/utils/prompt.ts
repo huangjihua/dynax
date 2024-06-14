@@ -1,8 +1,6 @@
 import { existsSync, removeSync } from 'fs-extra'
+import { input, confirm, checkbox, select } from '@inquirer/prompts';
 import { FrameworkType, FeatureType, IQuestion } from "../types";
-import logger from "../helpers/logger";
-
-const inquirer = require('inquirer');
 
 /**
  * 检查项目是否存在
@@ -12,22 +10,20 @@ const inquirer = require('inquirer');
  */
 export const checkProjectExist = async (targetDir: string) => {
   if (existsSync(targetDir)) {
-    const answer = await inquirer.prompt({
-      type: "list",
-      name: "checkExist",
-      message: `\n仓库路径${targetDir}已存在同名文件，请选择是否需要覆盖原路径（删除原文件后新建）`,
-      choices: ["是", "否"],
+    const answer = await confirm({
+      message: `仓库路径${targetDir}已存在同名目录，是否删除后新建？`,
+      transformer: (value: boolean) => {
+        if (value) {
+          removeSync(targetDir);
+          return '已删除'
+        } else {
+          return "已取消"
+        }
+      },
     });
-    if (answer.checkExist === "是") {
-      logger.warn(`已删除${targetDir}...`);
-      removeSync(targetDir);
-      return false;
-    } else {
-      logger.info("您已取消创建");
-      return true;
-    }
+    return answer;
   }
-  return false;
+  return true;
 };
 
 /**
@@ -37,42 +33,36 @@ export const checkProjectExist = async (targetDir: string) => {
  * @returns 返回问题列表的 Promise 对象
  */
 export const getQuestions = async (projectName: string): Promise<IQuestion> => {
-  return await inquirer.prompt([
-    {
-      type: "input",
-      name: "name",
-      message: `package name: (${projectName})`,
-      default: projectName,
-    },
-    {
-      type: "input",
-      name: "description",
-      message: "description",
-    },
-    {
-      type: "input",
-      name: "author",
-      message: "author",
-    }
-  ]);
+  const name = await input({
+    message: `package name: (${projectName})`,
+    default: projectName,
+  });
+  const description = await input({
+    message: "description",
+    default: `Init ${projectName}`
+  });
+  const author = await input({
+    message: "author",
+    default: ""
+  });
+  return { name, description, author }
 };
-
 
 /**
  *  选择构建框架
  *
  * @returns {Promise<{ template: FrameworkType }>}
  */
-export const getSelectFramework = (): Promise<{ template: FrameworkType }> => {
-  const choices = Object.values(FrameworkType)
-  return inquirer.prompt([
+export const getSelectFramework = async (): Promise<{ template: FrameworkType }> => {
+  const choices: { name: string, value: string }[] = Object.entries(FrameworkType).map(([key, value]) => ({ name: key, value }))
+  console.log(choices)
+  const answer = await select(
     {
-      type: "list",
-      name: 'template',
       message: 'select framework',
-      choices
+      choices: choices
     }
-  ])
+  )
+  return { template: answer as FrameworkType }
 }
 
 /**
@@ -85,12 +75,11 @@ export const getOptionalFeatures = async (): Promise<{ features: string[] }> => 
     name,
     value
   }));
-  return await inquirer.prompt(
+  const answer = await checkbox(
     {
-      type: "checkbox",
-      name: "features",
       message: "Select Optional Features",
       choices
     }
   )
+  return { features: answer }
 }

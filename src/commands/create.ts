@@ -44,6 +44,7 @@ const generateFeatureFile = (projectName: string, targetDir: string, template: F
  */
 const action = async (projectName: string, cmdArgs?: ICmdArgs) => {
   try {
+
     // 目标路径
     const targetDir = path.join(
       (cmdArgs && cmdArgs.context) || process.cwd(),
@@ -58,12 +59,12 @@ const action = async (projectName: string, cmdArgs?: ICmdArgs) => {
     }
     // 可选配置
     const { features } = await getOptionalFeatures();
-
-    // 检查文件是否存在
-    if (!(await checkProjectExist(targetDir))) {
+    const flag = await checkProjectExist(targetDir)
+    if (flag) {
       // 获取用户输入
       const projectInfo = await getQuestions(projectName)
-      spinner.start(`start create project: ${chalk.cyan(projectName)}`);
+      // spinner.start(`start create project: ${chalk.cyan(projectName)}`);
+      spinner.loading(`Loading create project : ${chalk.cyan(projectName)}`)
       // 复制'template'到目标路径下创建工程
       copySync(path.join(__dirname, "..", "..", `template`), targetDir);
       // 重写文件内容
@@ -74,13 +75,15 @@ const action = async (projectName: string, cmdArgs?: ICmdArgs) => {
         }
       })
       generateFeatureFile(projectName, targetDir, template, features)
+
+      spinner.succeed(`构建完成`);
       spinner.end(
-        `目标文件创建完成 ${chalk.yellow(projectName)}\n👉 输入以下命令开始创作吧!:`
+        `🎉 项目创建成功 ${chalk.yellow(projectName)}\n\n👉 输入以下命令开始创作吧!:`
       );
       console.log(chalk.blue(`$ cd ${projectName}\n$ pnpm install\n$ pnpm dev\n`))
     }
   } catch (err: any) {
-    console.error(`Action failed : ${err.message}`)
+    console.error(`Action Failed : ${err.message}`)
     return;
   }
 };

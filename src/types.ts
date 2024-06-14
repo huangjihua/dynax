@@ -5,7 +5,7 @@ export interface IQuestion {
   name: string;
   description: string;
   author: string;
-  git: string;
+  git?: string;
   base?: string;
   editPattern?: string;
 }

@@ -1,11 +1,17 @@
 import * as globby from 'globby'
-import * as path from 'path' // 这引入方式有毒
+import * as path from 'path'
+import * as chalk from "chalk";
 import { readFileSync } from 'fs-extra';
 import { manifest } from 'pacote'
+import { program } from "commander";
 import logger from "../helpers/logger";
+
 export interface IPackageInfo {
   version: string;
   name: string;
+  engines: {
+    node: string
+  }
 }
 
 
@@ -59,3 +65,19 @@ export const setGit = (git: string): string[] => [
   "git branch -M master",
   `git remote add origin ${git}`,
 ];
+
+/**
+ * 检查当前 Node.js 版本是否满足指定版本要求
+ *
+ * @param engines 包含 node 字段的对象，表示所需 Node.js 版本范围
+ * @returns 无返回值 不符合版本退出程序
+ */
+export const checkNodeVersion = (engines: { node: string }) => {
+  const semver = require('semver')
+  if (!semver.satisfies(process.version, engines.node)) {
+    console.error(
+      `Required node version ${engines.node} not satisfied with current version ${process.version}.`
+    );
+    process.exit(1);
+  }
+}

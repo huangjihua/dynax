@@ -1,4 +1,4 @@
-import { getLatestVersion, getPathList, getPkgInfo } from "./utils/index";
+import { getLatestVersion, getPathList, getPkgInfo, checkNodeVersion } from "./utils/index";
 import { program } from "commander";
 import logger from "./helpers/logger";
 import * as chalk from "chalk";
@@ -28,6 +28,10 @@ const printLastVersion = async (version: string, name: string) => {
  * @returns 无返回值
  */
 const start = async () => {
+  const packageInfo = getPkgInfo();
+  const { version, name, engines } = packageInfo;
+  checkNodeVersion(engines)
+
   // 获取所有命令
   const commandsPath = await getPathList("./commands/*.*s");
 
@@ -47,8 +51,7 @@ const start = async () => {
       });
   });
 
-  const packageInfo = getPkgInfo();
-  const { version, name } = packageInfo;
+
 
   // 配置版号，执行zy --version显示版本
   program.version(version);
@@ -56,24 +59,23 @@ const start = async () => {
   // 监听 --help 指令,加上额外的提示
   program.on("--help", () => {
     // 美化logo
-    console.log(
+    console.log(chalk.grey(
       "\r\n" +
-      figlet.textSync("dynax", {
+      figlet.textSync(name, {
         font: "3D-ASCII",
         horizontalLayout: "default",
         verticalLayout: "default",
         width: 80,
         whitespaceBreak: true,
-      })
+      }))
     );
     // 前后两个空行调整格式，更舒适
-    console.log();
     console.log(
       `Run ${chalk.cyan(
-        "dynax <command> --help"
-      )} for detailed usage of given command.`
+        `${name} <command> --help`
+      )} for detailed usage of given command.\n`
     );
-    console.log();
+
   });
 
   program.on("command:*", async ([cmd]) => {
@@ -87,4 +89,5 @@ const start = async () => {
   program.parseAsync(process.argv);
 };
 
+// export default start
 start();
