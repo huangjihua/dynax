@@ -1,4 +1,4 @@
-import { existsSync, removeSync } from 'fs-extra'
+import { exists, remove } from 'fs-extra'
 import { input, confirm, checkbox, select } from '@inquirer/prompts';
 import { FrameworkType, FeatureType, IQuestion } from "../types";
 
@@ -9,19 +9,18 @@ import { FrameworkType, FeatureType, IQuestion } from "../types";
  * @returns 如果目标文件夹已存在且用户选择覆盖原路径，则返回false；如果目标文件夹不存在或用户选择取消创建，则返回true
  */
 export const checkProjectExist = async (targetDir: string) => {
-  if (existsSync(targetDir)) {
+  const isExist = await exists(targetDir)
+  if (isExist) {
     const answer = await confirm({
-      message: `仓库路径${targetDir}已存在同名目录，是否删除后新建？`,
-      transformer: (value: boolean) => {
-        if (value) {
-          removeSync(targetDir);
-          return '已删除'
-        } else {
-          return "已取消"
-        }
-      },
-    });
-    return answer;
+      message: `仓库路径${targetDir}已存在同名目录，是否删除后新建？`
+    })
+    if (answer) {
+      await remove(targetDir);
+      console.log('  已删除');
+    } else {
+      console.log('  已取消');
+    }
+    return answer
   }
   return true;
 };

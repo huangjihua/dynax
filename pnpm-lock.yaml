@@ -1,4 +1,4 @@
-lockfileVersion: 5.4
+lockfileVersion: 5.3
 
 specifiers:
   '@changesets/cli': ^2.27.5
@@ -41,7 +41,7 @@ devDependencies:
   '@types/node': 20.14.2
   '@types/pacote': 11.1.8
   rimraf: 5.0.7
-  ts-node: 10.9.2_rbhojm5oscskcvynn67gz6cuhy
+  ts-node: 10.9.2_884ee4b3ae90a4a1570d6fbe6cf8543e
   typescript: 5.4.5
 
 packages:
@@ -491,8 +491,6 @@ packages:
       promise-retry: 2.0.1
       semver: 7.6.2
       which: 4.0.0
-    transitivePeerDependencies:
-      - bluebird
     dev: false
 
   /@npmcli/installed-package-contents/2.1.0:
@@ -520,8 +518,6 @@ packages:
       normalize-package-data: 6.0.1
       proc-log: 4.2.0
       semver: 7.6.2
-    transitivePeerDependencies:
-      - bluebird
     dev: false
 
   /@npmcli/promise-spawn/7.0.2:
@@ -547,7 +543,6 @@ packages:
       proc-log: 4.2.0
       which: 4.0.0
     transitivePeerDependencies:
-      - bluebird
       - supports-color
     dev: false
 
@@ -2455,7 +2450,6 @@ packages:
       ssri: 10.0.6
       tar: 6.2.1
     transitivePeerDependencies:
-      - bluebird
       - supports-color
     dev: false
 
@@ -2546,11 +2540,6 @@ packages:
 
   /promise-inflight/1.0.1:
     resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
-    peerDependencies:
-      bluebird: '*'
-    peerDependenciesMeta:
-      bluebird:
-        optional: true
     dev: false
 
   /promise-retry/2.0.1:
@@ -3024,7 +3013,7 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /ts-node/10.9.2_rbhojm5oscskcvynn67gz6cuhy:
+  /ts-node/10.9.2_884ee4b3ae90a4a1570d6fbe6cf8543e:
     resolution: {integrity: sha512-f0FFpIdcHgn8zcPSbf1dRevwt047YMnaiJM3u2w2RewrB+fob/zePZcrOyQoLMMO7aBIddLcQIEK5dYjkLnGrQ==}
     hasBin: true
     peerDependencies:

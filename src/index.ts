@@ -57,9 +57,9 @@ const start = async () => {
   program.version(version);
 
   // 监听 --help 指令,加上额外的提示
-  program.on("--help", () => {
+  program.on("--help", async () => {
     // 美化logo
-    console.log(chalk.grey(
+    console.log(chalk.white(
       "\r\n" +
       figlet.textSync(name, {
         font: "3D-ASCII",

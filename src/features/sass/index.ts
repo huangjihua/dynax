@@ -8,10 +8,10 @@ import { FeatureType } from "../../types";
  * @param features 功能列表
  * @returns 添加成功返回true，否则返回false
  */
-export default function addSass(targetDir: string, features: string[]) {
+export default async function addSass(targetDir: string, features: string[]) {
   const stylelint = features.includes(FeatureType.Stylelint) ? { "stylelint-config-standard-scss": "^13.1.0" } : {}
   try {
-    createOrUpdateJsonConfigFile(`${targetDir}/package.json`, {
+    await createOrUpdateJsonConfigFile(`${targetDir}/package.json`, {
       devDependencies: {
         'sass': '^1.77.3',
         ...stylelint

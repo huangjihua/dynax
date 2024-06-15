@@ -1,5 +1,5 @@
 import * as path from "path";
-import { copySync } from 'fs-extra'
+import { copy } from 'fs-extra'
 import * as chalk from "chalk";
 import { getQuestions, getSelectFramework, getOptionalFeatures, checkProjectExist } from "../utils/prompt";
 import { FrameworkType, ICmdArgs, CompileFrameWork } from "../types";
@@ -16,22 +16,22 @@ import spinner from '../helpers/spinner'
  * @param features 特性数组
  * @returns 无返回值
  */
-const generateFeatureFile = (projectName: string, targetDir: string, template: FrameworkType, features: string[]) => {
+const generateFeatureFile = async (projectName: string, targetDir: string, template: FrameworkType, features: string[]) => {
   const isNative = template === FrameworkType.reactNative
-  addTsConfig(targetDir, template, features) // typescript
-  addApi(targetDir, features, CompileFrameWork.vite)
-  addMock(targetDir, features) // mock
-  initVite(targetDir, template, features, CompileFrameWork.vite) // vite
-  initTpl(targetDir, template, features, CompileFrameWork.vite) // tpl => html
-  initApp(targetDir, template, projectName, features) // generate app
-  initOtherConfigFile(targetDir, template)
-  addEslint(targetDir, template, features) // eslint
+  await addTsConfig(targetDir, template, features) // typescript
+  await addApi(targetDir, features, CompileFrameWork.vite)
+  await addMock(targetDir, features) // mock
+  await initVite(targetDir, template, features, CompileFrameWork.vite) // vite
+  await initTpl(targetDir, template, features, CompileFrameWork.vite) // tpl => html
+  await initApp(targetDir, template, projectName, features) // generate app
+  await initOtherConfigFile(targetDir, template)
+  await addEslint(targetDir, template, features) // eslint
 
-  const isSass = isNative ? false : addSass(targetDir, features) // sass
-  addStylelint(targetDir, template, features, isSass) // stylelint
+  const isSass = isNative ? false : await addSass(targetDir, features) // sass
+  await addStylelint(targetDir, template, features, isSass) // stylelint
 
-  addPrettier(targetDir, features) // prettier
-  installHusky(targetDir) // husky
+  await addPrettier(targetDir, features) // prettier
+  await installHusky(targetDir) // husky
 }
 /**
  * 创建一个新的项目
@@ -64,23 +64,21 @@ const action = async (projectName: string, cmdArgs?: ICmdArgs) => {
       // 获取用户输入
       const projectInfo = await getQuestions(projectName)
       // spinner.start(`start create project: ${chalk.cyan(projectName)}`);
-      spinner.loading(`Loading create project : ${chalk.cyan(projectName)}`)
+      spinner.loading('loading......')
       // 复制'template'到目标路径下创建工程
-      copySync(path.join(__dirname, "..", "..", `template`), targetDir);
+      await copy(path.join(__dirname, "..", "..", `template`), targetDir);
       // 重写文件内容
-      createOrUpdateJsonConfigFile(`${targetDir}/package.json`, {
+      await createOrUpdateJsonConfigFile(`${targetDir}/package.json`, {
         ...projectInfo, ...{
           "private": true,
-          "version": "0.0.0",
+          "version": "0.0.0"
         }
       })
-      generateFeatureFile(projectName, targetDir, template, features)
-
+      await generateFeatureFile(projectName, targetDir, template, features)
       spinner.succeed(`构建完成`);
-      spinner.end(
-        `🎉 项目创建成功 ${chalk.yellow(projectName)}\n\n👉 输入以下命令开始创作吧!:`
-      );
-      console.log(chalk.blue(`$ cd ${projectName}\n$ pnpm install\n$ pnpm dev\n`))
+      spinner.end(`${chalk.yellow(projectName)} 项目创建成功`);
+      spinner.end(`👉 输入以下命令开始运行:\n ${chalk.blue(`$ cd ${projectName}\n$ pnpm install\n$ pnpm dev\n`)}`)
+      // console.log(chalk.blue(`$ cd ${projectName}\n$ pnpm install\n$ pnpm dev\n`))
     }
   } catch (err: any) {
     console.error(`Action Failed : ${err.message}`)

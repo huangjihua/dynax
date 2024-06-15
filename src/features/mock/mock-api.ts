@@ -1,14 +1,13 @@
 import { createOrOverwriteFile, createOrUpdateJsonConfigFile } from '../../utils/file'
-import { GenericObject, FeatureType, FrameworkType } from "../../types";
 
 /**
  * 添加 mock 接口
  *
  * @param targetDir 目标目录
  */
-export default function addMockApi(targetDir: string) {
+export default async function addMockApi(targetDir: string) {
 
-  createOrOverwriteFile(`${targetDir}/mock/index.js`, `
+  await createOrOverwriteFile(`${targetDir}/mock/index.js`, `
      export default [
       {
         url: '/api/helloworld',

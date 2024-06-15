@@ -23,9 +23,9 @@ VITE_APP_API_DOMAIN_1=/api`
  * @param targetDir 目标目录
  * @param compileFrameWork 编译框架 如：vite,webpack
  */
-export default function addEnv(targetDir: string, compileFrameWork: CompileFrameWork = CompileFrameWork.vite) {
+export default async function addEnv(targetDir: string, compileFrameWork: CompileFrameWork = CompileFrameWork.vite) {
   const envConfig = getConfig(compileFrameWork)
-  createOrOverwriteFile(`${targetDir}/env/.env.dev`, envConfig)
-  createOrOverwriteFile(`${targetDir}/env/.env.test`, envConfig.replace('/api', 'http://test.api.com'))
-  createOrOverwriteFile(`${targetDir}/env/.env.prod`, envConfig.replace('/api', 'http://prod.api.com'))
+  await createOrOverwriteFile(`${targetDir}/env/.env.dev`, envConfig)
+  await createOrOverwriteFile(`${targetDir}/env/.env.test`, envConfig.replace('/api', 'http://test.api.com'))
+  await createOrOverwriteFile(`${targetDir}/env/.env.prod`, envConfig.replace('/api', 'http://prod.api.com'))
 }

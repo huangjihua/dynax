@@ -2,11 +2,11 @@ import { createOrUpdateJsonConfigFile } from '../../utils/file'
 import { FeatureType } from "../../types";
 import addMockApi from './mock-api'
 
-export default function addMock(targetDir: string, features: string[]) {
+export default async function addMock(targetDir: string, features: string[]) {
   if (!features.includes(FeatureType.Mock)) return;
 
-  addMockApi(targetDir)
-  createOrUpdateJsonConfigFile(
+  await addMockApi(targetDir)
+  await createOrUpdateJsonConfigFile(
     `${targetDir}/package.json`,
     {
       devDependencies: {

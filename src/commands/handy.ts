@@ -7,13 +7,13 @@ const execa = require('execa');
  *
  * @returns 无返回值
  */
-const action = (projectName: string) => {
+const action = async (projectName: string) => {
   console.log("handy:", projectName);
 
   try {
     // 使用的模版
     if (projectName) {
-      execa.commandSync(`npx @auto/handy create ${projectName}`, {
+      await execa.command(`npx @auto/handy create ${projectName}`, {
         stdio: "inherit",
       })
     } else {

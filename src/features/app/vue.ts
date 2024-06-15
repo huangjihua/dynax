@@ -7,7 +7,7 @@ import { FeatureType } from "../../types";
  * @param {string} targetDir 目标目录路径
  * @param {string} lang isTS? lang="ts":'';
  */
-function generateComponent(targetDir: string, lang: string) {
+async function generateComponent(targetDir: string, lang: string) {
   const HelloWorld = `<script setup${lang}>
 import { ref,onMounted } from 'vue'
 import {getHelloworld} from '@/api'
@@ -33,7 +33,7 @@ import {getHelloworld} from '@/api'
 <style scoped>
 </style>
 `
-  createOrOverwriteFile(`${targetDir}/src/components/hello-world/index.vue`, HelloWorld)
+  await createOrOverwriteFile(`${targetDir}/src/components/hello-world/index.vue`, HelloWorld)
 }
 
 /**
@@ -43,7 +43,7 @@ import {getHelloworld} from '@/api'
  * @param isMock 是否为 mock
  * @param lang  语言类型 isTS? lang="ts":'';
  */
-function generateIndex(targetDir: string, isMock: boolean, isTs: boolean, lang: string) {
+async function generateIndex(targetDir: string, isMock: boolean, isTs: boolean, lang: string) {
   const indexPageContent = `<script setup${lang}>
   import { ref } from 'vue'
   ${isMock ? `import HelloWorld from '@/components/hello-world/index.vue'` : ''}
@@ -75,10 +75,10 @@ function generateIndex(targetDir: string, isMock: boolean, isTs: boolean, lang: 
 <style scoped>
   @import 'style.css'
 </style>`
-  createOrOverwriteFile(`${targetDir}/src/views/index/index.vue`, indexPageContent)
+  await createOrOverwriteFile(`${targetDir}/src/views/index/index.vue`, indexPageContent)
 }
 
-function generateApp(targetDir: string, lang: string) {
+async function generateApp(targetDir: string, lang: string) {
   const appContent = `<script setup${lang}>
 import Index from '@/views/index/index.vue'
 </script>
@@ -90,7 +90,7 @@ import Index from '@/views/index/index.vue'
 <style scoped>
 </style>
 `
-  createOrOverwriteFile(`${targetDir}/src/App.vue`, appContent)
+  await createOrOverwriteFile(`${targetDir}/src/App.vue`, appContent)
 }
 
 /**
@@ -99,13 +99,13 @@ import Index from '@/views/index/index.vue'
  * @param targetDir 目标目录
  * @param ext 文件扩展名
  */
-function generateMain(targetDir: string, ext: string) {
+async function generateMain(targetDir: string, ext: string) {
   const mainPageContent = `import { createApp } from 'vue'
   import App from './App.vue'
   import '@/assets/css/index.css'
 
   createApp(App).mount('#app')`
-  createOrOverwriteFile(`${targetDir}/src/main.${ext} `, mainPageContent)
+  await createOrOverwriteFile(`${targetDir}/src/main.${ext} `, mainPageContent)
 }
 /**
  * 生成 React 应用
@@ -114,17 +114,17 @@ function generateMain(targetDir: string, ext: string) {
  * @param features 功能列表
  * @param reactVersion React 版本号（可选）
  */
-export default function generateVueApp(targetDir: string, features: string[], reactVersion?: string) {
+export default async function generateVueApp(targetDir: string, features: string[], reactVersion?: string) {
   const isTs = features.includes(FeatureType.TypeScript);
   const isMock = features.includes(FeatureType.Mock);
   const ext = isTs ? 'ts' : 'js';
   const lang = isTs ? ' lang="ts"' : '';
 
-  generateIndex(targetDir, isMock, isTs, lang)
-  generateApp(targetDir, lang)
-  generateMain(targetDir, ext)
-  isMock && generateComponent(targetDir, lang)
-  createOrUpdateJsonConfigFile(`${targetDir}/package.json`, {
+  await generateIndex(targetDir, isMock, isTs, lang)
+  await generateApp(targetDir, lang)
+  await generateMain(targetDir, ext)
+  isMock && await generateComponent(targetDir, lang)
+  await createOrUpdateJsonConfigFile(`${targetDir}/package.json`, {
     dependencies: {
       "vue": "^3.4.27"
     }

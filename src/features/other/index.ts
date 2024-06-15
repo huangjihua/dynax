@@ -33,12 +33,12 @@ dist-ssr
  * @param template 项目模板
  * @returns 无返回值
  */
-export default function initOtherConfigFile(targetDir: string, template: FrameworkType) {
-  createOrOverwriteFile(`${targetDir}/.gitignore`, gitignore)
-  createOrOverwriteFile(`${targetDir}/.npmrc`, `registry="https://registry.npmmirror.com"`)
-  createOrOverwriteFile(`${targetDir}/.nvmrc`, `18.12.0`)
+export default async function initOtherConfigFile(targetDir: string, template: FrameworkType) {
+  await createOrOverwriteFile(`${targetDir}/.gitignore`, gitignore)
+  await createOrOverwriteFile(`${targetDir}/.npmrc`, `registry="https://registry.npmmirror.com"`)
+  await createOrOverwriteFile(`${targetDir}/.nvmrc`, `18.12.0`)
   if (template === FrameworkType.reactNative) {
-    createOrOverwriteFile(`${targetDir}/.babelrc`, `{
+    await createOrOverwriteFile(`${targetDir}/.babelrc`, `{
   "presets": ["module:metro-react-native-babel-preset"],
   "plugins": [
     "react-native-classname-to-style",
@@ -50,7 +50,7 @@ export default function initOtherConfigFile(targetDir: string, template: Framewo
     ]
   ]
 }`)
-    createOrUpdateJsonConfigFile(`${targetDir}/package.json`, {
+    await createOrUpdateJsonConfigFile(`${targetDir}/package.json`, {
       devDependencies: {
         "react-native-css-transformer": "2.0.0",
         "metro-react-native-babel-preset": "0.77.0",
@@ -59,12 +59,12 @@ export default function initOtherConfigFile(targetDir: string, template: Framewo
       }
     })
   } else {
-    createOrOverwriteFile(`${targetDir}/postcss.config.js`, `module.exports = {
+    await createOrOverwriteFile(`${targetDir}/postcss.config.js`, `module.exports = {
   plugins: {
-    autoprefixer: {},
+    autoprefixer: {}
   },
 };`)
-    createOrUpdateJsonConfigFile(`${targetDir}/package.json`, {
+    await createOrUpdateJsonConfigFile(`${targetDir}/package.json`, {
       devDependencies: {
         autoprefixer: '10.4.19'
       }

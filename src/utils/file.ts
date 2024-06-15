@@ -1,7 +1,4 @@
-import * as path from 'path'
-import {
-  pathExistsSync, outputFileSync, readJsonSync, outputJsonSync, readFileSync
-} from 'fs-extra';
+import { pathExists, outputFile, readJson, outputJson, readFile } from 'fs-extra';
 import spinner from '../helpers/spinner'
 import { flattenObject, updateNestedValues } from '../utils/obj';
 import { GenericObject } from "../types";
@@ -13,18 +10,22 @@ import { GenericObject } from "../types";
  * @param {string} filePath
  * @param {*} context
  */
-export function createFile(filePath: string, context: any) {
-
-  if (!pathExistsSync(filePath)) {
-    if (typeof context !== 'string') {
-      context = JSON.stringify(context, null, 2)
+export async function createFile(filePath: string, context: any) {
+  try {
+    const flag = await pathExists(filePath)
+    if (!flag) {
+      if (typeof context !== 'string') {
+        context = JSON.stringify(context, null, 2)
+      }
+      await outputFile(filePath, context, { encoding: 'utf8' });
+      // spinner.succeed(`Successfully created ${filePath}`
+      return true
     }
-    outputFileSync(filePath, context, { encoding: 'utf8' });
-    // spinner.succeed(`Successfully created ${filePath}`)
-    return true;
+    return false
+  } catch (error) {
+    spinner.fail(`create Failed: ${error}`);
+    return false
   }
-  return false
-
 }
 /**
  * 创建或更新JSON配置文件
@@ -36,16 +37,16 @@ export function createFile(filePath: string, context: any) {
   });
  */
 
-export function createOrUpdateJsonConfigFile(filePath: string, updates: GenericObject) {
+export async function createOrUpdateJsonConfigFile(filePath: string, updates: GenericObject) {
   try {
-    const isCreated = createFile(filePath, updates)
+    const isCreated = await createFile(filePath, updates) // 新生成就不更新
     if (isCreated) return;
-    let fileJson = readJsonSync(filePath, { encoding: 'utf8' });
+    let fileJson = await readJson(filePath, { encoding: 'utf8' });
     const newFileData = updateNestedValues(fileJson, flattenObject(updates))
-    outputJsonSync(filePath, newFileData, { spaces: 2, encoding: 'utf8' });
+    await outputJson(filePath, newFileData, { spaces: 2, encoding: 'utf8' });
     // spinner.succeed(`Successfully updated ${filePath}`);
   } catch (error) {
-    spinner.fail(`${filePath} update Failed: ${error}`);
+    spinner.fail(`json update Failed: ${error}`);
     process.exit(0);
   }
 }
@@ -57,14 +58,14 @@ export function createOrUpdateJsonConfigFile(filePath: string, updates: GenericO
  * @param {string} filePath
  * @param {string} content
  */
-export function createOrOverwriteFile(filePath: string, content: string) {
+export async function createOrOverwriteFile(filePath: string, content: string) {
   try {
-    const isCreated = createFile(filePath, content)
+    const isCreated = await createFile(filePath, content)
     if (isCreated) return;
-    outputFileSync(filePath, content, { encoding: 'utf8' });
+    await outputFile(filePath, content, { encoding: 'utf8' });
     // spinner.succeed(`Successfully updated ${filePath}`);
   } catch (error) {
-    spinner.fail(`${filePath} update Failed: ${error}`);
+    spinner.fail(`file update Failed: ${error}`);
     process.exit(0);
   }
 }

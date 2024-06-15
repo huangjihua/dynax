@@ -11,7 +11,7 @@ import { tsConfigNode, tsConfig } from './base'
  */
 
 
-export default function addTsConfig(targetDir: string, template: FrameworkType, features: string[]) {
+export default async function addTsConfig(targetDir: string, template: FrameworkType, features: string[]) {
   if (!features.includes(FeatureType.TypeScript)) return;
   let config: GenericObject = tsConfig
   switch (template) {
@@ -25,7 +25,7 @@ export default function addTsConfig(targetDir: string, template: FrameworkType, 
     default:
       break;
   }
-  createOrUpdateJsonConfigFile(`${targetDir}/package.json`, { devDependencies: { typescript: '^5.4.5' } })
-  createOrUpdateJsonConfigFile(`${targetDir}/tsconfig.json`, config)
-  createOrUpdateJsonConfigFile(`${targetDir}/tsconfig.node.json`, tsConfigNode)
+  await createOrUpdateJsonConfigFile(`${targetDir}/package.json`, { devDependencies: { typescript: '^5.4.5' } })
+  await createOrUpdateJsonConfigFile(`${targetDir}/tsconfig.json`, config)
+  await createOrUpdateJsonConfigFile(`${targetDir}/tsconfig.node.json`, tsConfigNode)
 }

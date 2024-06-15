@@ -84,7 +84,7 @@ export class Spinner {
   }
   // 加载失败
   fail = (text?: string) => {
-    // this.spinner.fail(chalk.red(text));
+    this.spinner.fail(chalk.red(text));
   };
 }
 

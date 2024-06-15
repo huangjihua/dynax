@@ -7,7 +7,7 @@ import { FeatureType } from "../../types";
  * @param {string} targetDir 目标目录路径
  * @param {string} ext 扩展名
  */
-function generateComponent(targetDir: string, ext: string) {
+async function generateComponent(targetDir: string, ext: string) {
   const HelloWorld = `import React,{useState,useEffect} from 'react'
 import {getHelloworld} from '@/api'
 export default function Index() {
@@ -27,7 +27,7 @@ export default function Index() {
     </div>
   )
 }`
-  createOrOverwriteFile(`${targetDir}/src/components/hello-world/index.${ext}`, HelloWorld)
+  await createOrOverwriteFile(`${targetDir}/src/components/hello-world/index.${ext}`, HelloWorld)
 }
 
 /**
@@ -37,7 +37,7 @@ export default function Index() {
  * @param isMock 是否为 mock
  * @param ext 文件扩展名
  */
-function generateIndex(targetDir: string, isMock: boolean, isTs: boolean, ext: string) {
+async function generateIndex(targetDir: string, isMock: boolean, isTs: boolean, ext: string) {
 
   const indexPageContent = `import React,{ useState } from 'react'
 ${isMock ? `import HelloWorld from '@/components/hello-world'` : ''}
@@ -70,10 +70,10 @@ function App() {
   )
 }
 export default App`
-  createOrOverwriteFile(`${targetDir}/src/views/index/index.${ext}`, indexPageContent)
+  await createOrOverwriteFile(`${targetDir}/src/views/index/index.${ext}`, indexPageContent)
 }
 
-function generateApp(targetDir: string, isTs: boolean, ext: string) {
+async function generateApp(targetDir: string, isTs: boolean, ext: string) {
   const appPageContent = `import React,{lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ErrorBoundary } from "react-error-boundary";
@@ -114,12 +114,10 @@ function App() {
   );
 }
 
-export default App;
-
-  `
-  createOrOverwriteFile(`${targetDir}/src/App.${ext}`, appPageContent)
+export default App;`
+  await createOrOverwriteFile(`${targetDir}/src/App.${ext}`, appPageContent)
 }
-function generateMain(targetDir: string, isTs: boolean, ext: string) {
+async function generateMain(targetDir: string, isTs: boolean, ext: string) {
   const mainPageContent = `import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.${ext}'
@@ -129,7 +127,7 @@ ReactDOM.createRoot(document.getElementById('app')).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>)`
-  createOrOverwriteFile(`${targetDir}/src/main.${ext}`, mainPageContent)
+  await createOrOverwriteFile(`${targetDir}/src/main.${ext}`, mainPageContent)
 }
 
 /**
@@ -139,16 +137,16 @@ ReactDOM.createRoot(document.getElementById('app')).render(
  * @param features 功能列表
  * @param reactVersion React 版本号（可选）
  */
-export default function generateReactApp(targetDir: string, features: string[], reactVersion?: string) {
+export default async function generateReactApp(targetDir: string, features: string[], reactVersion?: string) {
   const isTs = features.includes(FeatureType.TypeScript);
   const isMock = features.includes(FeatureType.Mock);
   const ext = isTs ? 'tsx' : 'jsx';
 
-  generateIndex(targetDir, isMock, isTs, ext)
-  generateApp(targetDir, isTs, ext)
-  generateMain(targetDir, isTs, ext)
-  isMock && generateComponent(targetDir, ext)
-  createOrUpdateJsonConfigFile(`${targetDir}/package.json`, {
+  await generateIndex(targetDir, isMock, isTs, ext)
+  await generateApp(targetDir, isTs, ext)
+  await generateMain(targetDir, isTs, ext)
+  isMock && await generateComponent(targetDir, ext)
+  await createOrUpdateJsonConfigFile(`${targetDir}/package.json`, {
     "dependencies": {
       "react": "^18.3.1",
       "react-dom": "^18.3.1",

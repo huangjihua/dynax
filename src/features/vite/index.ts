@@ -2,7 +2,7 @@ import { createOrOverwriteFile, createOrUpdateJsonConfigFile } from '../../utils
 import { FrameworkType, FeatureType, CompileFrameWork } from "../../types";
 import addEnv from '../env';
 
-function viteConfig(targetDir: string, template: FrameworkType, ext: string, isMock: boolean) {
+async function viteConfig(targetDir: string, template: FrameworkType, ext: string, isMock: boolean) {
   let content = `import react from '@vitejs/plugin-react';`
   let extensions = ``
   let resolve = `{
@@ -75,7 +75,7 @@ function viteConfig(targetDir: string, template: FrameworkType, ext: string, isM
       pkg.devDependencies['@vitejs/plugin-react'] = "^4.3.0"
       break;
   }
-  createOrUpdateJsonConfigFile(`${targetDir}/package.json`, pkg)
+  await createOrUpdateJsonConfigFile(`${targetDir}/package.json`, pkg)
 
   const viteConfig = `import { defineConfig, loadEnv } from 'vite';
 ${content}
@@ -103,7 +103,7 @@ export default ({ mode }) => {
   })
 }`
 
-  createOrOverwriteFile(`${targetDir}/vite.config.${ext}`, viteConfig)
+  await createOrOverwriteFile(`${targetDir}/vite.config.${ext}`, viteConfig)
 }
 
 /**
@@ -113,12 +113,12 @@ export default ({ mode }) => {
  * @param features 功能列表
  * @returns 无返回值
  */
-export default function initVite(targetDir: string, template: FrameworkType, features: string[], compileFrameWork: CompileFrameWork) {
+export default async function initVite(targetDir: string, template: FrameworkType, features: string[], compileFrameWork: CompileFrameWork) {
   if (compileFrameWork !== CompileFrameWork.vite) return;
   const isTs = features.includes(FeatureType.TypeScript);
   const isMock = features.includes(FeatureType.Mock);
   const ext = isTs ? 'ts' : 'js';
-  addEnv(targetDir, compileFrameWork)
-  viteConfig(targetDir, template, ext, isMock)
-  isTs && createOrOverwriteFile(`${targetDir}/.vite-env.d.ts`, '/// <reference types="vite/client" />')
+  await addEnv(targetDir, compileFrameWork)
+  await viteConfig(targetDir, template, ext, isMock)
+  isTs && await createOrOverwriteFile(`${targetDir}/.vite-env.d.ts`, '/// <reference types="vite/client" />')
 }

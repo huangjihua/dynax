@@ -9,7 +9,7 @@ import { eslintBase, eslintignore } from './base'
  * @param template 框架类型
  * @param feature 功能类型（可选）
  */
-function addEslint(targetDir: string, template: FrameworkType, features: string[]) {
+async function addEslint(targetDir: string, template: FrameworkType, features: string[]) {
   if (!features.includes(FeatureType.Eslint)) return;
   let config: GenericObject = eslintBase
   let installNpm: GenericObject[] = [{ eslint: '^8.57.0', "eslint-plugin-node": "^11.1.0" }]
@@ -117,14 +117,14 @@ function addEslint(targetDir: string, template: FrameworkType, features: string[
   }
   config = { ...eslintBase, ...config }
   // console.log('eslint 相关包：', Object.assign({}, ...installNpm))
-  createOrUpdateJsonConfigFile(`${targetDir}/package.json`, {
+  await createOrUpdateJsonConfigFile(`${targetDir}/package.json`, {
     scripts: {
-      lint: `eslint --ext .js,${ext.join(',')} --fix src`,
+      lint: `eslint --ext .js,${ext.join(',')} --fix src`
     },
-    devDependencies: { ...Object.assign({}, ...installNpm) },
+    devDependencies: { ...Object.assign({}, ...installNpm) }
   })
-  createOrOverwriteFile(`${targetDir}/.eslintrc.js`, `module.exports = ${JSON.stringify(config, null, 2).replace(/"(?!.*\/)(?!.*-)([^"]+)":/g, '$1:')}`)
-  createOrOverwriteFile(`${targetDir}/.eslintignore`, eslintignore)
+  await createOrOverwriteFile(`${targetDir}/.eslintrc.js`, `module.exports = ${JSON.stringify(config, null, 2).replace(/"(?!.*\/)(?!.*-)([^"]+)":/g, '$1:')}`)
+  await createOrOverwriteFile(`${targetDir}/.eslintignore`, eslintignore)
 }
 
 export default addEslint
