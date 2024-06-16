@@ -16,12 +16,10 @@
     "strictNullChecks": true,
     "allowUnreachableCode": true,
     "lib": ["es6"],
-    "typeRoots": ["./node_modules/@types"],
     "baseUrl": "./",
     "outDir": "./lib", // 重定向输出目录
-    "paths": { "@/*": ["./*"] }
   },
-  "include": ["src", "*.ts"],
+  "include": ["src"],
   "exclude": ["node_modules", "lib", "scripts", "__test__"],
   "esModuleInterop": true,
   "allowSyntheticDefaultImports": true,

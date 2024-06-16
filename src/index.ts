@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { getLatestVersion, getPathList, getPkgInfo, checkNodeVersion } from "./utils/index";
 import { program } from "commander";
 import logger from "./helpers/logger";
