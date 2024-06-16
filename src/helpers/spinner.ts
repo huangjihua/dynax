@@ -31,23 +31,18 @@ export async function oraPromise<T>(action: PromiseLike<T> | ((spinner: ora.Ora)
   try {
     const promise = actionIsFunction ? action(spinner) : action;
     const result = await promise;
-    // setTimeout(() => {
     spinner.succeed(
       typeof spinnerOptions.successText === 'function'
         ? spinnerOptions.successText(result)
         : spinnerOptions.successText
     );
-    // }, 2000);
     return result;
-  } catch (error) {
-    // setTimeout(() => {
+  } catch (error: any) {
     spinner.fail(
       typeof spinnerOptions.failText === 'function'
         ? spinnerOptions.failText(error)
         : spinnerOptions.failText
     );
-    // }, 2000)
-    // throw error;
     return error
   }
 }

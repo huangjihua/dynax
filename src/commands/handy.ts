@@ -19,7 +19,7 @@ const action = async (projectName: string) => {
     } else {
       logger.error("请输入项目名称");
     }
-  } catch (error) {
+  } catch (error:any) {
     logger.error(error);
   }
 };

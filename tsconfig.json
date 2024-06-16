@@ -3,6 +3,7 @@
     "target": "es2017",
     "module": "commonjs",
     // "declaration": true, //是否生成对应的声明文件
+    "strict": true,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -14,16 +15,13 @@
     "importHelpers": true,
     "strictNullChecks": true,
     "allowUnreachableCode": true,
-    // "allowJs": true,
-    "jsx": "preserve",
     "lib": ["es6"],
-    "typeRoots": ["./src/globals", "./node_modules/@types"],
+    "typeRoots": ["./node_modules/@types"],
     "baseUrl": "./",
-    // "types": ["node"],
     "outDir": "./lib", // 重定向输出目录
     "paths": { "@/*": ["./*"] }
   },
-  "include": ["src"],
+  "include": ["src", "*.ts"],
   "exclude": ["node_modules", "lib", "scripts", "__test__"],
   "esModuleInterop": true,
   "allowSyntheticDefaultImports": true,

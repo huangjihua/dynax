@@ -1,8 +1,8 @@
 {
   "name": "dynax",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "description": "This ClI tool anables you to quickly start building a new React or React-Native or Vue application,with everything you need to start developing in minutes.",
-  "main": "index.js",
+  "main": "./lib/index.js",
   "homepage": "",
   "engines": {
     "node": ">=18"
@@ -14,7 +14,7 @@
     "README.md"
   ],
   "bin": {
-    "dynax": "./index.js"
+    "dynax": "./lib/index.js"
   },
   "scripts": {
     "dev": "ts-node ./index.ts",
@@ -52,5 +52,5 @@
     "vue"
   ],
   "author": "huangjihua.online@gmail.com",
-  "license": "ISC"
+  "license": "MIT"
 }

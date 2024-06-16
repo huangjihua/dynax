@@ -21,6 +21,7 @@ async function viteConfig(targetDir: string, template: FrameworkType, ext: strin
       }
     },`
   let npmName = 'react'
+  let devDependencies: { [key: string]: string } = { "vite": "^5.2.12" }
   let pkg = {
     scripts: {
       "dev": "vite --mode dev",
@@ -30,9 +31,7 @@ async function viteConfig(targetDir: string, template: FrameworkType, ext: strin
       "build": "vite build --mode prod",
       "serve": "vite preview"
     },
-    devDependencies: {
-      "vite": "^5.2.12"
-    }
+    devDependencies
   }
 
   switch (template) {
