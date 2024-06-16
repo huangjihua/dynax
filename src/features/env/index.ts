@@ -11,9 +11,7 @@ function getConfig(compileFrameWork: CompileFrameWork) {
       break;
     default:
       return `// 开发或生产环境服务的公共基础路径
-VITE_APP_BASE=/
-// 接口URL配置
-VITE_APP_API_DOMAIN_1=/api`
+VITE_APP_BASE=/`
       break;
   }
 }

@@ -5,17 +5,17 @@ import generateNativeApp from '../app/native'
 import initMetro from '../app/metro'
 // import generateNativeApp from '../app/native/index'
 
-export default function initApp(targetDir: string, template: FrameworkType, projectName: string, features: string[]) {
+export default async function initApp(targetDir: string, template: FrameworkType, projectName: string, features: string[]) {
   switch (template) {
     case FrameworkType.vue:
-      generateVueApp(targetDir, features)
+      await generateVueApp(targetDir, features)
       break;
     case FrameworkType.reactNative:
-      generateNativeApp(targetDir, features)
-      initMetro(targetDir, template, projectName, features)
+      await generateNativeApp(targetDir, features)
+      await initMetro(targetDir, template, projectName, features)
       break;
     default:
-      generateReactApp(targetDir, features)
+      await generateReactApp(targetDir, features)
       break;
   }
 }

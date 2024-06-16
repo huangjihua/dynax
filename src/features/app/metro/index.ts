@@ -35,12 +35,20 @@ async function generateLabelConfig(targetDir: string) {
   await createOrOverwriteFile(`${targetDir}/babel.config.js`, `module.exports = {
   presets: ['module:metro-react-native-babel-preset'],
   plugins: [
+    [
       'module-resolver',
       {
         root: ['./src'],
         alias: {
           '@': './src',
         },
+      },
+    ],
+    'react-native-classname-to-style',
+    [
+      'react-native-platform-specific-extensions',
+      {
+        extensions: ['css', 'scss', 'sass', 'less'],
       },
     ],
   ],
@@ -70,8 +78,7 @@ async function generateAppConfig(targetDir: string, projectName: string) {
   await createOrUpdateJsonConfigFile(`${targetDir}/app.json`, {
     "name": projectName,
     "displayName": projectName
-  }
-  )
+  })
 }
 
 /**
@@ -90,22 +97,25 @@ export default async function initMetro(targetDir: string, template: FrameworkTy
   await generateAppConfig(targetDir, projectName)
   await generateInputFile(targetDir)
   await createOrUpdateJsonConfigFile(`${targetDir}/package.json`, {
-    "scripts": {
+    scripts: {
       "start": "react-native start",
       "android": "react-native run-android",
       "ios": "react-native run-ios",
       "build": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output dist/index.bundle --assets-dest dist/"
     },
-    "dependencies": {
+    dependencies: {
       "react-native-svg": "^15.3.0",
       "react-native-svg-transformer": "^1.4.0"
     },
-    "devDependencies": {
+    devDependencies: {
       "@babel/core": "^7.14.6",
       "@babel/runtime": "^7.14.6",
+      "@react-native/metro-config": "^0.74.84",
       "babel-plugin-module-resolver": "^5.0.2",
       "metro-react-native-babel-preset": "0.77.0",
-      "react-native-css-transformer": "2.0.0"
+      "react-native-css-transformer": "2.0.0",
+      "babel-plugin-react-native-platform-specific-extensions": "1.1.1",
+      "babel-plugin-react-native-classname-to-style": '1.2.2'
     }
   })
 }

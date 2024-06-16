@@ -1,7 +1,6 @@
 import * as globby from 'globby'
 import * as path from 'path'
-import * as chalk from "chalk";
-import { readFileSync } from 'fs-extra';
+import { readFileSync, readJson } from 'fs-extra';
 import { manifest } from 'pacote'
 import { program } from "commander";
 import logger from "../helpers/logger";
@@ -13,7 +12,6 @@ export interface IPackageInfo {
     node: string
   }
 }
-
 
 /**
  * 获取某个路径下的所有文件路径

@@ -1,7 +1,25 @@
-import { pathExists, outputFile, readJson, outputJson, readFile } from 'fs-extra';
+import { pathExists, outputFile, readJson, outputJson, readFile, writeJson } from 'fs-extra';
+import { merge } from 'lodash'
 import spinner from '../helpers/spinner'
-import { flattenObject, updateNestedValues } from '../utils/obj';
 import { GenericObject } from "../types";
+
+/**
+ * 深度更新 JSON 文件中的指定字段
+ * @param {string} filePath - JSON 文件的路径
+ * @param {Object} updates - 包含要更新字段的对象
+ */
+const deepUpdateJson = async (filePath: string, updates: GenericObject) => {
+  try {
+    // 读取 JSON 文件
+    const json = await readJson(filePath);
+    // 深度合并更新
+    const updatedJson = merge({}, json, updates);
+    // 写回 JSON 文件
+    await writeJson(filePath, updatedJson, { spaces: 2, encoding: 'utf8' });
+  } catch (error: any) {
+    console.error(`Error updating:`, error);
+  }
+};
 
 /**
  * 创建文件，如果文件已存在则不处理，目录不存在会自动创建父级目录
@@ -22,8 +40,8 @@ export async function createFile(filePath: string, context: any) {
       return true
     }
     return false
-  } catch (error) {
-    spinner.fail(`create Failed: ${error}`);
+  } catch (error: any) {
+    spinner.fail(`create Failed: ${error.message}`);
     return false
   }
 }
@@ -41,12 +59,13 @@ export async function createOrUpdateJsonConfigFile(filePath: string, updates: Ge
   try {
     const isCreated = await createFile(filePath, updates) // 新生成就不更新
     if (isCreated) return;
-    let fileJson = await readJson(filePath, { encoding: 'utf8' });
-    const newFileData = updateNestedValues(fileJson, flattenObject(updates))
-    await outputJson(filePath, newFileData, { spaces: 2, encoding: 'utf8' });
+    // let fileJson = await readJson(filePath, { encoding: 'utf8' });
+    // const newFileData = updateNestedValues(fileJson, flattenObject(updates));
+    // await outputJson(filePath, newFileData, { spaces: 2, encoding: 'utf8' });
+    await deepUpdateJson(filePath, updates)
     // spinner.succeed(`Successfully updated ${filePath}`);
-  } catch (error) {
-    spinner.fail(`json update Failed: ${error}`);
+  } catch (error: any) {
+    spinner.fail(`json update Failed: ${error.message}`);
     process.exit(0);
   }
 }
@@ -64,8 +83,8 @@ export async function createOrOverwriteFile(filePath: string, content: string) {
     if (isCreated) return;
     await outputFile(filePath, content, { encoding: 'utf8' });
     // spinner.succeed(`Successfully updated ${filePath}`);
-  } catch (error) {
-    spinner.fail(`file update Failed: ${error}`);
+  } catch (error: any) {
+    spinner.fail(`file update Failed: ${error.message}`);
     process.exit(0);
   }
 }

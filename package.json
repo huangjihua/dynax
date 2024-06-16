@@ -29,6 +29,7 @@
     "figlet": "^1.7.0",
     "fs-extra": "^11.2.0",
     "globby": "^11.0.4",
+    "lodash": "^4.17.21",
     "ora": "^5.4.1",
     "pacote": "^18.0.6",
     "semver": "^7.6.2"
@@ -38,6 +39,7 @@
     "@types/figlet": "^1.5.8",
     "@types/fs-extra": "^11.0.4",
     "@types/inquirer": "^9.0.7",
+    "@types/lodash": "^4.17.5",
     "@types/node": "^20.14.2",
     "@types/pacote": "^11.1.8",
     "rimraf": "^5.0.5",

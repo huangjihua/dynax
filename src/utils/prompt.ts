@@ -54,7 +54,6 @@ export const getQuestions = async (projectName: string): Promise<IQuestion> => {
  */
 export const getSelectFramework = async (): Promise<{ template: FrameworkType }> => {
   const choices: { name: string, value: string }[] = Object.entries(FrameworkType).map(([key, value]) => ({ name: key, value }))
-  console.log(choices)
   const answer = await select(
     {
       message: 'select framework',

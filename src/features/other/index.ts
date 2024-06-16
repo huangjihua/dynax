@@ -36,29 +36,8 @@ dist-ssr
 export default async function initOtherConfigFile(targetDir: string, template: FrameworkType) {
   await createOrOverwriteFile(`${targetDir}/.gitignore`, gitignore)
   await createOrOverwriteFile(`${targetDir}/.npmrc`, `registry="https://registry.npmmirror.com"`)
-  await createOrOverwriteFile(`${targetDir}/.nvmrc`, `18.12.0`)
-  if (template === FrameworkType.reactNative) {
-    await createOrOverwriteFile(`${targetDir}/.babelrc`, `{
-  "presets": ["module:metro-react-native-babel-preset"],
-  "plugins": [
-    "react-native-classname-to-style",
-    [
-      "react-native-platform-specific-extensions",
-      {
-        "extensions": ["css","scss","sass","less"]
-      }
-    ]
-  ]
-}`)
-    await createOrUpdateJsonConfigFile(`${targetDir}/package.json`, {
-      devDependencies: {
-        "react-native-css-transformer": "2.0.0",
-        "metro-react-native-babel-preset": "0.77.0",
-        "babel-plugin-react-native-platform-specific-extensions": "1.1.1",
-        "babel-plugin-react-native-classname-to-style": '1.2.2'
-      }
-    })
-  } else {
+  await createOrOverwriteFile(`${targetDir}/.nvmrc`, `18.0.0`)
+  if (template !== FrameworkType.reactNative) {
     await createOrOverwriteFile(`${targetDir}/postcss.config.js`, `module.exports = {
   plugins: {
     autoprefixer: {}

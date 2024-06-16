@@ -13,6 +13,7 @@ import { GenericObject } from "../types";
  */
 export const updateNestedValues = (obj: GenericObject, updates: { [keyPath: string]: any }): GenericObject => {
   const result = { ...obj };
+  // console.log(result)
   for (const keyPath in updates) {
     const keys = keyPath.split('.');
     let current: GenericObject = result;
@@ -24,6 +25,7 @@ export const updateNestedValues = (obj: GenericObject, updates: { [keyPath: stri
 
     current[keys[keys.length - 1]] = updates[keyPath];
   }
+  // console.log(result)
 
   return result;
 }

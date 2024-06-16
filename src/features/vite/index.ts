@@ -94,6 +94,7 @@ export default ({ mode }) => {
     ],
     server: {
       port: 5000,
+      host: '127.0.0.1',
       open: env.VITE_APP_BASE,
     },
     base:env.VITE_APP_BASE,

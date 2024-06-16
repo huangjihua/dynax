@@ -6,7 +6,7 @@ import { FrameworkType, ICmdArgs, CompileFrameWork } from "../types";
 import { createOrUpdateJsonConfigFile } from "../utils/file";
 import { addTsConfig, addEslint, addStylelint, addPrettier, addApi, addMock, initVite, initTpl, initApp, initOtherConfigFile, addSass, installHusky } from "../features";
 import spinner from '../helpers/spinner'
-
+const execa = require('execa');
 /**
  * 生成特性文件
  *
@@ -78,7 +78,6 @@ const action = async (projectName: string, cmdArgs?: ICmdArgs) => {
       spinner.succeed(`构建完成`);
       spinner.end(`${chalk.yellow(projectName)} 项目创建成功`);
       spinner.end(`👉 输入以下命令开始运行:\n ${chalk.blue(`$ cd ${projectName}\n$ pnpm install\n$ pnpm dev\n`)}`)
-      // console.log(chalk.blue(`$ cd ${projectName}\n$ pnpm install\n$ pnpm dev\n`))
     }
   } catch (err: any) {
     console.error(`Action Failed : ${err.message}`)

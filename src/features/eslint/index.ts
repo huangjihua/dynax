@@ -12,7 +12,7 @@ import { eslintBase, eslintignore } from './base'
 async function addEslint(targetDir: string, template: FrameworkType, features: string[]) {
   if (!features.includes(FeatureType.Eslint)) return;
   let config: GenericObject = eslintBase
-  let installNpm: GenericObject[] = [{ eslint: '^8.57.0', "eslint-plugin-node": "^11.1.0" }]
+  let installNpm: GenericObject[] = [{ eslint: '8.57.0', "eslint-plugin-node": "^11.1.0" }]
   let ext: string[] = []
   if (features.includes(FeatureType.TypeScript)) {
     config.env = {
@@ -102,7 +102,7 @@ async function addEslint(targetDir: string, template: FrameworkType, features: s
         parser: '@babel/eslint-parser',
         plugins: ['react', 'react-native'],
       }
-      installNpm.push({ '@babel/eslint-parser': '^7.24.6', 'eslint-plugin-react-native': '^4.1.0' })
+      installNpm.push({ '@babel/eslint-parser': '^7.24.6', 'eslint-plugin-react-native': '^4.1.0', '@react-native-community/eslint-config': '^3.2.0' })
       ext.push('.jsx')
       if (features.includes(FeatureType.TypeScript)) {
         delete config['parser'];
