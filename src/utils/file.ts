@@ -59,9 +59,6 @@ export async function createOrUpdateJsonConfigFile(filePath: string, updates: Ge
   try {
     const isCreated = await createFile(filePath, updates) // 新生成就不更新
     if (isCreated) return;
-    // let fileJson = await readJson(filePath, { encoding: 'utf8' });
-    // const newFileData = updateNestedValues(fileJson, flattenObject(updates));
-    // await outputJson(filePath, newFileData, { spaces: 2, encoding: 'utf8' });
     await deepUpdateJson(filePath, updates)
     // spinner.succeed(`Successfully updated ${filePath}`);
   } catch (error: any) {
